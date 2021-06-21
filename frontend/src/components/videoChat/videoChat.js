@@ -1,5 +1,6 @@
 import React,{useEffect, useState, useRef} from 'react';
 import Peer from 'simple-peer';
+import Video from '../../containers/video/video';
 import socket from "../../socket";
 
 
@@ -38,7 +39,6 @@ const VideoChat = (props) => {
       //when a new user joins video room
       socket.on('F-user-join', (users) => {
 
-        console.log("new user", users);
         // all users
         const peers = [];
         users.forEach(({ userID, data }) => {
@@ -96,6 +96,7 @@ const VideoChat = (props) => {
           setPeers((users) => {
             return [...users, peer];
           });
+
           setUserVideoAudio((preList) => {
             return {
               ...preList,
@@ -113,7 +114,6 @@ const VideoChat = (props) => {
 
 
     });
-
 
 
         return () => {
@@ -172,6 +172,25 @@ function addPeer(incomingSignal, callerId, stream) {
     return peer;
   }    
 
+  //adding other members video to screen
+  function createUserVideo(peer, index, arr) {
+    return (
+      <div
+        // className={`width-peer${peers.length > 8 ? '' : peers.length}`}
+        // onClick={expandScreen}
+        key={index}
+      >
+        {/* {writeUserName(peer.userName)} */}
+        {/* <FaIcon className='fas fa-expand' /> */}
+        <Video key={index} peer={peer} number={arr.length} />
+      </div>
+      // <Video key={index}
+      // peer={peer}>
+
+      // </Video>
+    );
+  }
+
 
     return ( 
         <div id ="video-chat">
@@ -179,6 +198,9 @@ function addPeer(incomingSignal, callerId, stream) {
             muted 
             autoPlay
             playsInline></video>
+          {/* Joined User Vidoe */}
+          {peers &&
+            peers.map((peer, index, arr) => createUserVideo(peer, index, arr))}
         </div>
      );
 }

@@ -26,6 +26,9 @@ const VideoChat = (props) => {
         setVideoDevices(video_devices);
       });
 
+    // Set Back Button Event
+    window.addEventListener('popstate', goToBack);    
+
    // Connect Camera & Mic
     navigator.mediaDevices
     .getUserMedia({ video: true, audio: true })
@@ -112,6 +115,17 @@ const VideoChat = (props) => {
         peerIdx.peer.signal(signal);
       });
 
+    //removing leaving member from peers connection
+    socket.on('F-user-leave', ({ userID, username }) => {
+    const peerIdx = findPeer(userID);
+    console.log(`${username} left!!`)
+    peerIdx.peer.destroy();
+    setPeers((users) => {
+      users = users.filter((user) => user.peerID !== peerIdx.peer.peerID);
+      return [...users];
+    });
+    
+  });
 
     });
 
@@ -191,6 +205,14 @@ function addPeer(incomingSignal, callerId, stream) {
     );
   }
 
+    // BackButton
+    const goToBack = (e) => {
+      e.preventDefault();
+      socket.emit('B-leave-room', { roomID, leaver: currentUser });
+      sessionStorage.removeItem('username');
+      window.location.href = '/';
+    };
+  
 
     return ( 
         <div id ="video-chat">

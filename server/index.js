@@ -22,13 +22,13 @@ res.status(200).json({
 })
 })
 
-// Route
-// app.get('/ping', (req, res) => {
-//     res.send({
-//         success: true,
-//       })
-//       .status(200);
-//   });
+//Route
+app.get('/ping', (req, res) => {
+    res.send({
+        success: true,
+      })
+      .status(200);
+  });
 
 
 //sockets
@@ -128,6 +128,17 @@ socket.on('B-accept-call', ({ signal, to }) => {
       signal,
       answerId: socket.id,
     });
+  });
+
+  //user leaving group meeting
+    socket.on('B-leave-room', ({ roomID, leaver }) => {
+    delete socketList[socket.id];
+    console.log(`${leaver} left!`)
+    //informing other members in room
+    socket.broadcast
+      .to(roomID)
+      .emit('F-user-leave', { userID: socket.id, username:leaver });
+    io.sockets.sockets[socket.id].leave(roomID);
   });
 
 // end of socket 

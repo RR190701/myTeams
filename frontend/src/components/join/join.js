@@ -4,17 +4,17 @@ import socket from "../../socket";
 
 const Join = (props) => {
 
-    // const usernameRef = useRef(null);
+    const usernameRef = useRef(null);
     const [err, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [username, setUsername] = useState("");
+    // const [username, setUsername] = useState("");
     
 
  useEffect(()=>{
 socket.on("F-user-already-exist", ({error}) => {
     if(!error){
         const roomID = props.match.params.roomID;
-        // const username = usernameRef.current.value;
+        const username = usernameRef.current.value;
         sessionStorage.setItem("username", username)
         props.history.push(`/meet/${roomID}`)
     }
@@ -32,7 +32,7 @@ socket.on("F-user-already-exist", ({error}) => {
 
 function handleJoin() {
     const roomID = props.match.params.roomID;
-    // const username =  usernameRef.current.value;
+    const username =  usernameRef.current.value;
 if(!username){
     setError(true);
 }
@@ -44,7 +44,7 @@ else{
     return (
         <div>
         <label htmlFor="username">User Name</label>
-        <input type="text" id="username" value={username} onChange={(e)=>setUsername(e.target.value)} />
+        <input type="text" id="username" ref={usernameRef} />
         <button onClick ={handleJoin}>
             join
         </button>

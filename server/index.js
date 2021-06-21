@@ -43,7 +43,6 @@ socket.on("disconnect", ()=>{
 //checking if user exist already
 socket.on("B-check-for-user", ({roomID, username})=>{
 let error = false;
-console.log(username)
 
     // var clients= io.sockets.clients(roomID);
     // clients.forEach((client) => {
@@ -69,8 +68,9 @@ io.sockets.in(roomID).clients((err, clients) => {
 socket.on("B-join-room", ({roomID, username})=>{
 
     //socket joining in room with id:roomID
+
     socket.join(roomID);
-    socketList[socket.id] = {username, video:true, audio: true}
+    socketList[socket.id] = {username, video:true, audio: true}   
 
 
     // var clients= io.sockets.clients(roomID);
@@ -93,12 +93,13 @@ socket.on("B-join-room", ({roomID, username})=>{
 
         try{
             const users= [];
+
             clients.forEach(client => {
                 //adding users to list
                 users.push({userID: client, data: socketList[client]});
             });
             //informing other users of room
-            users.broadcast.to(roomID).emit("F-user-join", users);
+            socket.broadcast.to(roomID).emit("F-user-join", users);
         }
         catch(error){
             //user already exist in room

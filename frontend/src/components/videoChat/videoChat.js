@@ -119,7 +119,7 @@ const VideoChat = (props) => {
         return () => {
             socket.disconnect();
           };
-          
+
     // eslint-disable-next-line
     },[])
 

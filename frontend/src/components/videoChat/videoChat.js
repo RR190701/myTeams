@@ -37,6 +37,8 @@ const VideoChat = (props) => {
 
       //when a new user joins video room
       socket.on('F-user-join', (users) => {
+
+        console.log("new user", users);
         // all users
         const peers = [];
         users.forEach(({ userID, data }) => {
@@ -117,6 +119,7 @@ const VideoChat = (props) => {
         return () => {
             socket.disconnect();
           };
+          
     // eslint-disable-next-line
     },[])
 

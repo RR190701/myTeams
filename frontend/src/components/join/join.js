@@ -1,18 +1,20 @@
 import React,{useRef, useState, useEffect} from 'react'
 import socket from "../../socket";
 
+
 const Join = (props) => {
 
-    const usernameRef = useRef();
-    const [error, setError] = useState(false);
+    // const usernameRef = useRef(null);
+    const [err, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [username, setUsername] = useState("");
     
 
  useEffect(()=>{
 socket.on("F-user-already-exist", ({error}) => {
     if(!error){
         const roomID = props.match.params.roomID;
-        const username = usernameRef.current.value;
+        // const username = usernameRef.current.value;
         sessionStorage.setItem("username", username)
         props.history.push(`/meet/${roomID}`)
     }
@@ -24,11 +26,13 @@ socket.on("F-user-already-exist", ({error}) => {
 
 
 })
-},[errorMessage, props.history, props.match.params.roomID])   
+
+// eslint-disable-next-line
+},[])   
 
 function handleJoin() {
     const roomID = props.match.params.roomID;
-    const username = usernameRef.current.value;
+    // const username =  usernameRef.current.value;
 if(!username){
     setError(true);
 }
@@ -39,12 +43,12 @@ else{
 
     return (
         <div>
-        <label htmlFor="userName">User Name</label>
-        <input type="text" id="username" ref={usernameRef} />
+        <label htmlFor="username">User Name</label>
+        <input type="text" id="username" value={username} onChange={(e)=>setUsername(e.target.value)} />
         <button onClick ={handleJoin}>
             join
         </button>
-        <span>{error?errorMessage:null}</span>
+        <span>{err?errorMessage:null}</span>
         </div>
       );
 }

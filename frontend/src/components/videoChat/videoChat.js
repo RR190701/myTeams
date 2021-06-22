@@ -2,9 +2,54 @@ import React,{useEffect, useState, useRef} from 'react';
 import Peer from 'simple-peer';
 import Video from '../../containers/video/video';
 import socket from "../../socket";
+import AppBar from '@material-ui/core/AppBar';
+import "./style.css"
+import Grid from '@material-ui/core/Grid';
+import Divider from '@material-ui/core/Divider';
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import CallEndIcon from '@material-ui/icons/CallEnd';
+import ChatIcon from '@material-ui/icons/Chat';
+import VideocamIcon from '@material-ui/icons/Videocam';
+import MicIcon from '@material-ui/icons/Mic';
+import Paper from '@material-ui/core/Paper';
 
+//material UI styling 
+
+const useStyles = makeStyles((theme) => ({
+  topBar:{
+    backgroundColor:"#212121",
+    width:"100%"
+  
+
+  },
+  topBarGrid: {
+    alignItems:"center",
+   display:"flex",
+   flexDirection:"row-reverse",
+  //  border:"white solid 2px!important",
+    color: "#f4f4f4",
+    '& svg': {
+      margin: theme.spacing(1),
+      // border:"white solid 2px!important",
+      width:"1.25rem"
+    },
+
+  },
+  leaveButton:{
+   padding:"0 .5rem 0 .3rem!important",
+    margin:".35rem 1rem .35rem .2rem",
+    height:"30px",
+    textTransform:"capitalize",
+    fontWeight:"bold",
+    '& svg': {
+      marginRight:".1rem"
+    }
+  }
+}));
 
 const VideoChat = (props) => {
+  const classes = useStyles();
     const currentUser = sessionStorage.getItem('username');
     const roomID = props.match.params.roomID;
     //list of peers connected through same room
@@ -65,6 +110,7 @@ const VideoChat = (props) => {
               username,
             });
             peers.push(peer);
+            console.log(peers)
 
             setUserVideoAudio((preList) => {
               return {
@@ -215,11 +261,33 @@ function addPeer(incomingSignal, callerId, stream) {
   
 
     return ( 
-        <div id ="video-chat">
-            <video ref={myVideoRef} 
+        <div className ="video-chat-room">
+<div className={classes.topBar}>
+<div className={classes.topBarGrid}>
+
+        <Button
+        variant="contained"
+        color="secondary"
+        className={classes.leaveButton}
+        startIcon={<CallEndIcon />}
+      >
+        Leave
+      </Button>
+      <MicIcon/>
+      <VideocamIcon />
+      <Divider orientation="vertical" flexItem />
+      
+      <ChatIcon  />
+       
+      </div>
+</div>
+
+          <video ref={myVideoRef} 
             muted 
             autoPlay
             playsInline></video>
+
+  
           {/* Joined User Vidoe */}
           {peers &&
             peers.map((peer, index, arr) => createUserVideo(peer, index, arr))}

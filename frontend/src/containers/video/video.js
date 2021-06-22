@@ -1,4 +1,5 @@
 import React,{useEffect,useRef} from 'react';
+import "./style.css"
 
 const Video = (props) => {
 const ref = useRef();
@@ -16,6 +17,7 @@ useEffect(()=>{
 },[peer]);
 
     return ( 
+      
         <video
         playsInline
         autoPlay
@@ -23,6 +25,7 @@ useEffect(()=>{
         ref={ref}>
 
         </video>
+ 
      );
 
 }

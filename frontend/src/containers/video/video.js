@@ -17,7 +17,7 @@ useEffect(()=>{
 },[peer]);
 
     return ( 
-      
+
         <video
         playsInline
         autoPlay
@@ -25,6 +25,7 @@ useEffect(()=>{
         ref={ref}>
 
         </video>
+
  
      );
 

@@ -1,0 +1,11 @@
+.video-box{
+    width: 25%;
+    height: 50%;
+    border: solid 2px red;
+}
+.video-box>video{
+    max-width: 100%!important;
+    max-height: 100%!important;
+    object-fit: center;
+    
+}

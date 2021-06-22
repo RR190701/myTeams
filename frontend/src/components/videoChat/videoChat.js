@@ -233,9 +233,9 @@ function addPeer(incomingSignal, callerId, stream) {
   }    
 
   //adding other members video to screen
-  function createUserVideo(peer, index, arr) {
+function createUserVideo(peer, index, arr) {
     return (
-      <div
+      <div className="video-box"
         // className={`width-peer${peers.length > 8 ? '' : peers.length}`}
         // onClick={expandScreen}
         key={index}
@@ -281,16 +281,21 @@ function addPeer(incomingSignal, callerId, stream) {
        
       </div>
 </div>
-
-          <video ref={myVideoRef} 
+      <div className="video-container">
+        <div className="video-box">
+        <video ref={myVideoRef} 
             muted 
             autoPlay
             playsInline></video>
 
+        </div>
   
           {/* Joined User Vidoe */}
           {peers &&
             peers.map((peer, index, arr) => createUserVideo(peer, index, arr))}
+
+      </div>
+
         </div>
      );
 }

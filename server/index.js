@@ -45,13 +45,6 @@ socket.on("disconnect", ()=>{
 socket.on("B-check-for-user", ({roomID, username})=>{
 let error = false;
 
-    // var clients= io.sockets.clients(roomID);
-    // clients.forEach((client) => {
-    //   if (socketList[client] == userName) {
-    //     error = true;
-    //   }
-    // });
-    // socket.emit("F-user-already-exist", { error });
 
 io.sockets.in(roomID).clients((err, clients) => {
     clients.forEach((client) => {
@@ -74,22 +67,6 @@ socket.on("B-join-room", ({roomID, username})=>{
     socketList[socket.id] = {username, video:true, audio: true}   
 
 
-    // var clients= io.sockets.clients(roomID);
-    //     try{
-    //         const users= [];
-    //         clients.forEach(client => {
-    //             //adding users to list
-    //             users.push({userID: client, data: socketList[client]});
-    //         });
-    //         //informing other users of room
-    //         users.broadcast.to(roomID).emit("F-user-join", users);
-    //     }
-    //     catch(error){
-    //         //user already exist in room
-    //         io.sockets.in(roomID).emit("F-user-already-exist", {err: true})
-    //     }
-
-    //generating list of users in same room
     io.sockets.in(roomID).clients((err, clients) => {
 
         try{
@@ -141,9 +118,20 @@ socket.on('B-accept-call', ({ signal, to }) => {
     io.sockets.sockets[socket.id].leave(roomID);
   });
 
+  //toggle video and audio
+  socket.on('B-toggle-camera-audio', ({ roomID, switchTarget }) => {
+    if (switchTarget === 'video') {
+      socketList[socket.id].video = !socketList[socket.id].video;
+    } else {
+      socketList[socket.id].audio = !socketList[socket.id].audio;
+    }
+    socket.broadcast
+      .to(roomID)
+      .emit('F-toggle-camera-audio', { userID: socket.id, switchTarget });
+  });
+
 // end of socket 
 });
-
 
 server.listen(port, ()=>{
     console.log("sever running on", port);

@@ -2,54 +2,13 @@ import React,{useEffect, useState, useRef} from 'react';
 import Peer from 'simple-peer';
 import Video from '../../containers/video/video';
 import socket from "../../socket";
-import AppBar from '@material-ui/core/AppBar';
 import "./style.css"
-import Grid from '@material-ui/core/Grid';
-import Divider from '@material-ui/core/Divider';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import CallEndIcon from '@material-ui/icons/CallEnd';
-import ChatIcon from '@material-ui/icons/Chat';
-import VideocamIcon from '@material-ui/icons/Videocam';
+import TopBar from "./../topbar/topbar";
 import MicIcon from '@material-ui/icons/Mic';
-import Paper from '@material-ui/core/Paper';
-
-//material UI styling 
-
-const useStyles = makeStyles((theme) => ({
-  topBar:{
-    backgroundColor:"#212121",
-    width:"100%"
-  
-
-  },
-  topBarGrid: {
-    alignItems:"center",
-   display:"flex",
-   flexDirection:"row-reverse",
-  //  border:"white solid 2px!important",
-    color: "#f4f4f4",
-    '& svg': {
-      margin: theme.spacing(1),
-      // border:"white solid 2px!important",
-      width:"1.25rem"
-    },
-
-  },
-  leaveButton:{
-   padding:"0 .5rem 0 .3rem!important",
-    margin:".35rem 1rem .35rem .2rem",
-    height:"30px",
-    textTransform:"capitalize",
-    fontWeight:"bold",
-    '& svg': {
-      marginRight:".1rem"
-    }
-  }
-}));
+import MicOffIcon from '@material-ui/icons/MicOff';
 
 const VideoChat = (props) => {
-  const classes = useStyles();
+ 
     const currentUser = sessionStorage.getItem('username');
     const roomID = props.match.params.roomID;
     //list of peers connected through same room
@@ -110,18 +69,18 @@ const VideoChat = (props) => {
               username,
             });
             peers.push(peer);
-            console.log(peers)
 
             setUserVideoAudio((preList) => {
               return {
                 ...preList,
-                [peer.userName]: { video, audio },
+                [peer.username]: { video, audio },
               };
             });
           }
         });
 
         setPeers(peers);
+        console.log(userVideoAudio)
       });
 
     //receiving call from other room members
@@ -138,7 +97,7 @@ const VideoChat = (props) => {
           peersRef.current.push({
             peerID: from,
             peer,
-            userName: username,
+            username: username,
           });
 
           //adding single peer
@@ -149,7 +108,7 @@ const VideoChat = (props) => {
           setUserVideoAudio((preList) => {
             return {
               ...preList,
-              [peer.userName]: { video, audio },
+              [peer.username]: { video, audio },
             };
           });
         }
@@ -173,6 +132,23 @@ const VideoChat = (props) => {
     
   });
 
+  //toggling video and audio
+  socket.on('F-toggle-camera-audio', ({ userID, switchTarget }) => {
+    const peerIdx = findPeer(userID);
+
+    setUserVideoAudio((preList) => {
+      let video = preList[peerIdx.username].video;
+      let audio = preList[peerIdx.username].audio;
+
+      if (switchTarget === 'video') video = !video;
+      else audio = !audio;
+
+      return {
+        ...preList,
+        [peerIdx.username]: { video, audio },
+      };
+    });
+  });
     });
 
 
@@ -240,15 +216,39 @@ function createUserVideo(peer, index, arr) {
         // onClick={expandScreen}
         key={index}
       >
-        {/* {writeUserName(peer.userName)} */}
+        {writeUserName(peer.username)}
         {/* <FaIcon className='fas fa-expand' /> */}
         <Video key={index} peer={peer} number={arr.length} />
       </div>
-      // <Video key={index}
-      // peer={peer}>
 
-      // </Video>
     );
+  }
+
+  function writeUserName(username) {
+    console.log("uu",username)
+    if (userVideoAudio.hasOwnProperty(username)) {
+      if (!userVideoAudio[username].video) {
+        console.log("username ",username)
+        return (                   
+       <div className="username" key ={username}>
+        <div className="avatar">
+          <h1>
+          {username[0]}
+          </h1>
+        
+        </div>
+        <div className="real-name">
+                        <div>{username}</div>
+                        {
+           userVideoAudio[username].audio? 
+            <MicIcon/>
+          : 
+          <MicOffIcon></MicOffIcon> 
+          }
+                      </div>
+        </div>);
+      }
+    }
   }
 
     // BackButton
@@ -259,30 +259,75 @@ function createUserVideo(peer, index, arr) {
       window.location.href = '/';
     };
   
+  
+    //toggle camera and audio
+   const toggleCameraAudio = (e) => {
+      const target = e.currentTarget.getAttribute('data-switch');
+ 
+      setUserVideoAudio((preList) => {
+        let videoSwitch = preList['localUser'].video;
+        let audioSwitch = preList['localUser'].audio;
+  
+        if (target === 'video') {
+          const userVideoTrack = myVideoRef.current.srcObject.getVideoTracks()[0];
+          videoSwitch = !videoSwitch;
+          userVideoTrack.enabled = videoSwitch;
+        } else {
+          const userAudioTrack = myVideoRef.current.srcObject.getAudioTracks()[0];
+          const userVideoTrack = myVideoRef.current.srcObject.getVideoTracks()[0];
+          audioSwitch = !audioSwitch;
+  
+          if (userAudioTrack) {
+            userAudioTrack.enabled = audioSwitch;
+            userVideoTrack.enabled = videoSwitch;
+            
+          } else {
+            myStream.current.getAudioTracks()[0].enabled = audioSwitch;
+          }
+        }
+
+  
+        return {
+          ...preList,
+          localUser: { video: videoSwitch, audio: audioSwitch },
+        };
+      });
+  
+      socket.emit('B-toggle-camera-audio', { roomID, switchTarget: target });
+    };
 
     return ( 
         <div className ="video-chat-room">
-<div className={classes.topBar}>
-<div className={classes.topBarGrid}>
-
-        <Button
-        variant="contained"
-        color="secondary"
-        className={classes.leaveButton}
-        startIcon={<CallEndIcon />}
-      >
-        Leave
-      </Button>
-      <MicIcon/>
-      <VideocamIcon />
-      <Divider orientation="vertical" flexItem />
-      
-      <ChatIcon  />
-       
-      </div>
-</div>
+      {/* app bar */}
+    <TopBar
+    leave = {goToBack}
+    userVideoAudio={userVideoAudio['localUser']}
+    toggleCameraAudio={toggleCameraAudio}
+    ></TopBar>
+    {/* video container */}
       <div className="video-container">
         <div className="video-box">
+        {userVideoAudio['localUser'].video ? null : (
+                                         <div className="username">
+                      <div className="avatar">
+                        <h1>
+                        {currentUser[0]}
+                        </h1>
+                      
+                      </div>
+                      <div className="real-name">
+                        <div>{currentUser}</div>
+                        {
+           userVideoAudio['localUser'].audio? 
+            <MicIcon/>
+          : 
+          <MicOffIcon></MicOffIcon> 
+          }
+                      </div>
+                      </div>
+            )}
+
+
         <video ref={myVideoRef} 
             muted 
             autoPlay

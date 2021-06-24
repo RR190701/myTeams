@@ -64,7 +64,7 @@ socket.on("B-join-room", ({roomID, username})=>{
     //socket joining in room with id:roomID
 
     socket.join(roomID);
-    socketList[socket.id] = {username, video:true, audio: true}   
+    socketList[socket.id] = {username, video:true, audio:true, handRaised:false}   
 
 
     io.sockets.in(roomID).clients((err, clients) => {
@@ -122,8 +122,11 @@ socket.on('B-accept-call', ({ signal, to }) => {
   socket.on('B-toggle-camera-audio', ({ roomID, switchTarget }) => {
     if (switchTarget === 'video') {
       socketList[socket.id].video = !socketList[socket.id].video;
-    } else {
+    } else if(switchTarget === 'audio') {
       socketList[socket.id].audio = !socketList[socket.id].audio;
+    }
+    else {
+      socketList[socket.id].handRaised = !socketList[socket.id].handRaised;
     }
     socket.broadcast
       .to(roomID)

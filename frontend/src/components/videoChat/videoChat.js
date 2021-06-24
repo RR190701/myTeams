@@ -6,6 +6,7 @@ import "./style.css"
 import TopBar from "./../topbar/topbar";
 import MicIcon from '@material-ui/icons/Mic';
 import MicOffIcon from '@material-ui/icons/MicOff';
+import PanToolIcon from '@material-ui/icons/PanTool';
 
 const VideoChat = (props) => {
  
@@ -15,7 +16,7 @@ const VideoChat = (props) => {
     const [peers, setPeers] = useState([]);
     const [videoDevices, setVideoDevices] = useState([]);
     const [userVideoAudio, setUserVideoAudio] = useState({
-        localUser: { video: true, audio: true },
+        localUser: { video: true, audio: true , handRaised: false},
       });
     const myVideoRef = useRef();
     const myStream = useRef();
@@ -52,7 +53,8 @@ const VideoChat = (props) => {
             //userID -> socket.id
             //{username, video, audio}
 
-          let { username, video, audio } = data;
+          let { username, video, audio, handRaised } = data;
+          console.log("here", handRaised)
 
           //calling all the other members of the video room
           if (username !== currentUser) {
@@ -73,19 +75,18 @@ const VideoChat = (props) => {
             setUserVideoAudio((preList) => {
               return {
                 ...preList,
-                [peer.username]: { video, audio },
+                [peer.username]: { video, audio, handRaised },
               };
             });
           }
         });
 
         setPeers(peers);
-        console.log(userVideoAudio)
       });
 
     //receiving call from other room members
     socket.on('F-receive-call', ({ signal, from, data }) => {
-        let { username, video, audio } = data;
+        let { username, video, audio, handRaised } = data;
         const peerIdx = findPeer(from);
         
         //if not present already
@@ -108,7 +109,7 @@ const VideoChat = (props) => {
           setUserVideoAudio((preList) => {
             return {
               ...preList,
-              [peer.username]: { video, audio },
+              [peer.username]: { video, audio, handRaised },
             };
           });
         }
@@ -139,13 +140,15 @@ const VideoChat = (props) => {
     setUserVideoAudio((preList) => {
       let video = preList[peerIdx.username].video;
       let audio = preList[peerIdx.username].audio;
+      let handRaised = preList[peerIdx.username].handRaised;
 
       if (switchTarget === 'video') video = !video;
-      else audio = !audio;
+      else if(switchTarget === 'audio') audio = !audio;
+      else handRaised= !handRaised;
 
       return {
         ...preList,
-        [peerIdx.username]: { video, audio },
+        [peerIdx.username]: { video, audio, handRaised },
       };
     });
   });
@@ -210,13 +213,30 @@ function addPeer(incomingSignal, callerId, stream) {
 
   //adding other members video to screen
 function createUserVideo(peer, index, arr) {
+  const username = peer.username;
+  let borderClass = "";
+  if (userVideoAudio.hasOwnProperty(username)){
+  
+  
+ 
+    if(userVideoAudio[username].video && userVideoAudio[username].handRaised)
+    borderClass ="video-on-and-handRaised";
+    else if(userVideoAudio[username].video && userVideoAudio[username].audio)
+    borderClass ="video-on-audio-on";
+    else if(userVideoAudio[username].video)
+    borderClass = "video-on";
+  }
+  
+
+
     return (
-      <div className="video-box"
+      <div className={`video-box ${borderClass}`}
         // className={`width-peer${peers.length > 8 ? '' : peers.length}`}
         // onClick={expandScreen}
         key={index}
       >
         {writeUserName(peer.username)}
+        {writeUserNameOnVideo(peer.username)}
         {/* <FaIcon className='fas fa-expand' /> */}
         <Video key={index} peer={peer} number={arr.length} />
       </div>
@@ -225,21 +245,41 @@ function createUserVideo(peer, index, arr) {
   }
 
   function writeUserName(username) {
-    console.log("uu",username)
+
     if (userVideoAudio.hasOwnProperty(username)) {
+
+      let addClass ='';
+      if(userVideoAudio[username].audio && userVideoAudio[username].handRaised){
+        // console.log("raised")
+        addClass ="speaking-with-camera-off-hand-raised";
+      }
+      else if(userVideoAudio[username].handRaised){
+        // console.log("raised")
+        addClass ="camera-off-hand-raised";
+      }
+     
+      else if(userVideoAudio[username].audio)
+      addClass ="speaking-with-camera-off";
+
       if (!userVideoAudio[username].video) {
-        console.log("username ",username)
+       
         return (                   
-       <div className="username" key ={username}>
-        <div className="avatar">
+       <div className="username">
+       <div className={`avatar ${addClass}`}>
           <h1>
           {username[0]}
           </h1>
         
         </div>
         <div className="real-name">
-                        <div>{username}</div>
-                        {
+          {
+           userVideoAudio[username].handRaised? 
+           <PanToolIcon className= "hand-raised"/>
+         : 
+         null
+          }
+          <div>{username}</div>
+          {
            userVideoAudio[username].audio? 
             <MicIcon/>
           : 
@@ -251,6 +291,24 @@ function createUserVideo(peer, index, arr) {
     }
   }
 
+  function writeUserNameOnVideo(username){
+    if (userVideoAudio.hasOwnProperty(username)) {
+
+
+      if (userVideoAudio[username].video) {
+       
+        return (   
+          <div class ="username-on-video">
+          { userVideoAudio[username].handRaised?<PanToolIcon style={{color:"#FFCC00"}}></PanToolIcon>:null}
+          <div>
+            {username}
+          </div>
+          { userVideoAudio[username].audio?<MicIcon></MicIcon>:<MicOffIcon></MicOffIcon>}
+                </div>                
+      );
+      }
+    }
+  }
     // BackButton
     const goToBack = (e) => {
       e.preventDefault();
@@ -267,12 +325,14 @@ function createUserVideo(peer, index, arr) {
       setUserVideoAudio((preList) => {
         let videoSwitch = preList['localUser'].video;
         let audioSwitch = preList['localUser'].audio;
+        let handRaisedSwitch = preList['localUser'].handRaised;
   
         if (target === 'video') {
           const userVideoTrack = myVideoRef.current.srcObject.getVideoTracks()[0];
           videoSwitch = !videoSwitch;
           userVideoTrack.enabled = videoSwitch;
-        } else {
+        } 
+        else if(target === 'audio') {
           const userAudioTrack = myVideoRef.current.srcObject.getAudioTracks()[0];
           const userVideoTrack = myVideoRef.current.srcObject.getVideoTracks()[0];
           audioSwitch = !audioSwitch;
@@ -285,16 +345,46 @@ function createUserVideo(peer, index, arr) {
             myStream.current.getAudioTracks()[0].enabled = audioSwitch;
           }
         }
+        else{
+          handRaisedSwitch = !handRaisedSwitch;
+        }
 
   
         return {
           ...preList,
-          localUser: { video: videoSwitch, audio: audioSwitch },
+          localUser: { video: videoSwitch, audio: audioSwitch, handRaised: handRaisedSwitch },
         };
       });
   
       socket.emit('B-toggle-camera-audio', { roomID, switchTarget: target });
     };
+
+    
+    //defining addClass
+    let addClass ='';
+    if(userVideoAudio["localUser"].audio && userVideoAudio["localUser"].handRaised){
+      // console.log("raised")
+      addClass ="speaking-with-camera-off-hand-raised";
+    }
+    else if(userVideoAudio["localUser"].handRaised){
+      // console.log("raised")
+      addClass ="camera-off-hand-raised";
+    }   
+    else if(userVideoAudio["localUser"].audio)
+    addClass ="speaking-with-camera-off";
+
+
+    //defining border class
+    let borderClass = "";
+    if(userVideoAudio["localUser"].video && userVideoAudio["localUser"].handRaised)
+    borderClass ="video-on-and-handRaised";
+    else if(userVideoAudio["localUser"].video && userVideoAudio["localUser"].audio)
+    borderClass ="video-on-audio-on";
+    else if(userVideoAudio["localUser"].video)
+    borderClass = "video-on";
+
+
+
 
     return ( 
         <div className ="video-chat-room">
@@ -302,20 +392,27 @@ function createUserVideo(peer, index, arr) {
     <TopBar
     leave = {goToBack}
     userVideoAudio={userVideoAudio['localUser']}
+    peersVideoAudio={userVideoAudio}
     toggleCameraAudio={toggleCameraAudio}
     ></TopBar>
     {/* video container */}
       <div className="video-container">
-        <div className="video-box">
+        <div className={`video-box ${borderClass}` }>
         {userVideoAudio['localUser'].video ? null : (
-                                         <div className="username">
-                      <div className="avatar">
+                      <div className="username">
+                      <div className={`avatar ${addClass}`}>
                         <h1>
                         {currentUser[0]}
                         </h1>
                       
                       </div>
                       <div className="real-name">
+                      {
+           userVideoAudio["localUser"].handRaised? 
+           <PanToolIcon className= "hand-raised"/>
+         : 
+         null
+          }
                         <div>{currentUser}</div>
                         {
            userVideoAudio['localUser'].audio? 
@@ -326,8 +423,19 @@ function createUserVideo(peer, index, arr) {
                       </div>
                       </div>
             )}
-
-
+{
+  userVideoAudio["localUser"].video?
+  (
+    <div class = "username-on-video">
+{ userVideoAudio["localUser"].handRaised?<PanToolIcon style={{color:"#FFCC00"}}></PanToolIcon>:null}
+<div>
+  {currentUser}
+</div>
+{ userVideoAudio["localUser"].audio?<MicIcon></MicIcon>:<MicOffIcon></MicOffIcon>}
+      </div>
+  ):
+  null
+}
         <video ref={myVideoRef} 
             muted 
             autoPlay

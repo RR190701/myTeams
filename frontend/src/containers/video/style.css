@@ -7,6 +7,6 @@
 .video-box>video{
     max-width: 100%!important;
     max-height: 100%!important;
-    object-fit: center;
+    object-fit: cover!important;
     
 }

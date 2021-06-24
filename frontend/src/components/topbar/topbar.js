@@ -10,6 +10,8 @@ import MicOffIcon from '@material-ui/icons/MicOff';
 import IconButton from '@material-ui/core/IconButton';
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 import PanToolIcon from '@material-ui/icons/PanTool';
+import Badge from '@material-ui/core/Badge';
+import "./style.css";
 //material UI styling 
 
 const useStyles = makeStyles((theme) => ({
@@ -31,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
         color: "#f4f4f4",
         margin: theme.spacing(1.5),
         padding:0,
-        // border:"white solid 2px!important",
         width:"1.25rem",
+        cursor:"pointer"
       },
   
 
@@ -45,16 +47,38 @@ const useStyles = makeStyles((theme) => ({
       '& svg': {
         marginRight:".1rem"
       }
+    },
+
+    handRaised:{
+      color:"#FFCC00",
+      margin: theme.spacing(1.5),
+      padding:0,
+      // border:"white solid 2px!important",
+      width:"1.25rem",
+      cursor:"pointer",
     }
   }));
   
 const TopBar = ({
     leave,
     userVideoAudio,
-    toggleCameraAudio
+    toggleCameraAudio,
+    peersVideoAudio
 }) => {
 
     const classes = useStyles();
+    console.log(userVideoAudio);
+
+const  getHandRaised = ()=> {
+  const keys = Object.keys(peersVideoAudio);
+  console.log(peersVideoAudio)
+  let handRaised=0;
+  keys.forEach((key, index) => {
+if(peersVideoAudio[key].handRaised)
+handRaised+=1;
+});
+  return handRaised;
+}
 
     return (
         <div className={classes.topBar}>
@@ -88,7 +112,13 @@ const TopBar = ({
       <Divider orientation="vertical" flexItem  />
       
       <ChatIcon className={classes.topBarIcons}  />
-      <PanToolIcon className={classes.topBarIcons}></PanToolIcon>
+      <Badge badgeContent={getHandRaised()} color="primary" className="handRaisedCount">
+      <PanToolIcon 
+      onClick={toggleCameraAudio} 
+      className={`${userVideoAudio.handRaised?classes.handRaised:classes.topBarIcons}`} 
+       data-switch='handRaised'></PanToolIcon>
+      </Badge>
+
        
       </div>
 </div>

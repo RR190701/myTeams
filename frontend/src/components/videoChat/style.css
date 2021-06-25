@@ -5,7 +5,6 @@
  
 }
 .video-container {
-    width: 100%;
     height: 90%;
     margin-top: 0rem;
     display: flex;
@@ -15,10 +14,18 @@
     box-sizing: border-box;
     justify-content: center;
 }
+.showChat{
+    width: 80%;
+}
+
+.hideChat{
+    width: 100;
+}
 .video-box{
-    width: 29.5%;
-    height: 50%;
+    width: 32.7%;
+    height: 48.5%;
     position: relative;
+    margin: 1.5px;
 
 }
 .video-on-and-handRaised{

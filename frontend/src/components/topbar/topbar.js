@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -11,15 +11,14 @@ import IconButton from '@material-ui/core/IconButton';
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 import PanToolIcon from '@material-ui/icons/PanTool';
 import Badge from '@material-ui/core/Badge';
+import clsx from 'clsx';
 import "./style.css";
 //material UI styling 
+
 
 const useStyles = makeStyles((theme) => ({
     topBar:{
       backgroundColor:"#212121",
-      width:"100%"
-    
-  
     },
     topBarGrid: {
       alignItems:"center",
@@ -63,15 +62,16 @@ const TopBar = ({
     leave,
     userVideoAudio,
     toggleCameraAudio,
-    peersVideoAudio
+    peersVideoAudio,
+    openChat,
+    showChat
 }) => {
 
     const classes = useStyles();
-    console.log(userVideoAudio);
+   
 
-const  getHandRaised = ()=> {
+const getHandRaised = ()=> {
   const keys = Object.keys(peersVideoAudio);
-  console.log(peersVideoAudio)
   let handRaised=0;
   keys.forEach((key, index) => {
 if(peersVideoAudio[key].handRaised)
@@ -81,7 +81,9 @@ handRaised+=1;
 }
 
     return (
-        <div className={classes.topBar}>
+        <div       
+        className={`${classes.topBar} ${showChat?"showChat":"hideChat"}`}>
+
 <div className={classes.topBarGrid}>
 
         <Button
@@ -111,7 +113,7 @@ handRaised+=1;
        </IconButton>
       <Divider orientation="vertical" flexItem  />
       
-      <ChatIcon className={classes.topBarIcons}  />
+      <ChatIcon className={classes.topBarIcons} onClick={openChat} />
       <Badge badgeContent={getHandRaised()} color="primary" className="handRaisedCount">
       <PanToolIcon 
       onClick={toggleCameraAudio} 

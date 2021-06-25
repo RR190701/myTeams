@@ -7,6 +7,7 @@ import TopBar from "./../topbar/topbar";
 import MicIcon from '@material-ui/icons/Mic';
 import MicOffIcon from '@material-ui/icons/MicOff';
 import PanToolIcon from '@material-ui/icons/PanTool';
+import Chat from './../Chat/chat';
 
 const VideoChat = (props) => {
  
@@ -15,6 +16,7 @@ const VideoChat = (props) => {
     //list of peers connected through same room
     const [peers, setPeers] = useState([]);
     const [videoDevices, setVideoDevices] = useState([]);
+    const [showChat, setShowChat] = useState(false);
     const [userVideoAudio, setUserVideoAudio] = useState({
         localUser: { video: true, audio: true , handRaised: false},
       });
@@ -317,6 +319,11 @@ function createUserVideo(peer, index, arr) {
       window.location.href = '/';
     };
   
+    //show Chat
+const openChat = (e) => {
+  e.stopPropagation();
+  setShowChat(!showChat);
+}
   
     //toggle camera and audio
    const toggleCameraAudio = (e) => {
@@ -394,9 +401,11 @@ function createUserVideo(peer, index, arr) {
     userVideoAudio={userVideoAudio['localUser']}
     peersVideoAudio={userVideoAudio}
     toggleCameraAudio={toggleCameraAudio}
+    openChat={openChat}
+    showChat={showChat}
     ></TopBar>
     {/* video container */}
-      <div className="video-container">
+      <div className={`video-container ${showChat?"showChat":"hideChat"}`}>
         <div className={`video-box ${borderClass}` }>
         {userVideoAudio['localUser'].video ? null : (
                       <div className="username">
@@ -448,6 +457,11 @@ function createUserVideo(peer, index, arr) {
             peers.map((peer, index, arr) => createUserVideo(peer, index, arr))}
 
       </div>
+     {/* chat application */}
+     <Chat
+     showChat={showChat}
+     roomID={roomID}
+     ></Chat>
 
         </div>
      );

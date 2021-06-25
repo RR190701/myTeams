@@ -133,6 +133,11 @@ socket.on('B-accept-call', ({ signal, to }) => {
       .emit('F-toggle-camera-audio', { userID: socket.id, switchTarget });
   });
 
+  //sending message to others
+  socket.on('B-send-message', ({ roomID, message, sender }) => {
+    io.sockets.in(roomID).emit('F-receive-message', { message, sender });
+  });
+
 // end of socket 
 });
 

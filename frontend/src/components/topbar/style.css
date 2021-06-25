@@ -2,3 +2,11 @@
     top: 12px!important;
     right:7px;
 }
+.showChat{
+    /* width: 80%; */
+    width: calc(100% - 240px);
+}
+
+.hideChat{
+    width: 100%;
+}

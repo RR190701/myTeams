@@ -21,7 +21,7 @@
   }
 
 .textbox-div>svg {
- color:#464EB8;
+ color: #6264A7;
 }
 .chat-area{
     width: 100%;
@@ -29,34 +29,42 @@
     max-height: 82%;
     overflow-x: hidden;
     overflow-y: auto;
+
+}
+.messages {
     display: flex;
     width: 100%;
     flex-direction: column;
-    padding: 15px;
     color: #454552;
+    box-sizing: border-box;   
+    padding: .5rem;
 }
 .member-message{
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    font-size: 16px;
-    margin-top: 15px;
-    margin-left: 15px;
     text-align: left;
+
+
 }
-.member-message>strong{
-    margin-left: 3px;
+.member-message>span{
+    margin:0;
+    padding: 0;
+    font-size: .7rem;  
+    margin-left: .3rem;
 }
 .member-message>p{
     max-width: 65%;
     width: auto;
-    padding: 9px;
-    margin-top: 3px;
-    border: 1px solid rgb(78, 161, 211, 0.3);
-    border-radius: 15px;
-    box-shadow: 0px 0px 3px #4ea1d3;
-    font-size: 14px;   
+    margin:0;
+    background-color: #eeecc0;
+    padding: 0;
+    border-radius: 5px;
+    font-size: .9rem;  
+    font-weight: 600; 
+    padding: .3rem .5rem;
+    margin-top: .2rem;
 }
 
 .my-message{
@@ -64,25 +72,31 @@
     flex-direction: column;
     align-items: flex-end;
     width: 100%;
-    font-size: 16px;
-    margin-top: 15px;
     text-align: right;
 }
 
-.my-message>strong{
-    margin-right: 35px;
+.my-message>span{
+    margin:0;
+    padding: 0;
+    font-size: .7rem;  
+    margin-right: .3rem;
 }
 
 .my-message>p{
     max-width: 65%;
     width: auto;
-    padding: 9px;
-    margin-top: 3px;
-    margin-right: 30px;
-    border: 1px solid rgb(78, 161, 211, 0.3);
-    border-radius: 15px;
-    background-color: #4ea1d3;
+    border-radius: 5px;
+    background-color: #6264A7;
     color: white;
-    font-size: 14px;
+    margin:0;
+    padding: 0;
+    font-size: .9rem;
     text-align: left;
+    font-weight: 600;
+    padding: .3rem .5rem;
+    margin-top: .2rem;
+}
+.new-message{
+    opacity: 0.6!important;
+    padding: 0!important;
 }

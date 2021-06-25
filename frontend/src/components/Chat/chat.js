@@ -5,8 +5,15 @@ import Drawer from '@material-ui/core/Drawer';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
 import ScrollToBottom from "react-scroll-to-bottom";
+import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
+import CloseIcon from '@material-ui/icons/Close';
+import Slide from '@material-ui/core/Slide';
 import "./style.css"
 
+function SlideTransition(props) {
+  return <Slide {...props} direction="down" />;
+}
 
 const drawerWidth = 240;
 
@@ -42,19 +49,37 @@ export default function Chat({showChat, roomID}) {
   const currentUser = sessionStorage.getItem('username');
   const [msg, setMsg] = useState([]);
   const [message, setMessage] = useState("")
+  const [state, setState] = useState(false);
+  const [newMessage,  setNewMessage] = useState("");
+  const [sender, setSender] = useState("")
  // const inputRef = useRef();
 
   useEffect(() => {
     socket.on('F-receive-message', ({ message, sender }) => {
       setMsg((msgs) => [...msgs, { sender, message }]);
+
+      if(sender!==currentUser){
+        setState(true);
+        setNewMessage(message);
+        setSender(sender);
+      }
+
+
+      const timer = setTimeout(() => {
+        setState(false)
+        setNewMessage("");
+        setSender("");
+
+      }, 1000);
+      return () => clearTimeout(timer);
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
 
   //helper function
   const sendMessage = () => {
-   console.log(msg);
       if (message) {
         socket.emit('B-send-message', { roomID, message, sender: currentUser });
         setMessage("");
@@ -80,26 +105,29 @@ export default function Chat({showChat, roomID}) {
 </div>
 {/* messages area */}
 <div className="chat-area">
-<ScrollToBottom>
+  <div className= "messages">
+  <ScrollToBottom>
 {msg &&
             msg.map(({ sender, message }, idx) => {
               if (sender !== currentUser) {
                 return (
                   <div className="member-message" key={idx}>
-                    <strong>{sender}</strong>
+                    <span>{sender}</span>
                     <p>{message}</p>
                   </div>
                 );
               } else {
                 return (
                   <div className="my-message" key={idx}>
-                    <strong>{sender}</strong>
+                    <span>{sender}</span>
                     <p>{message}</p>
                   </div>
                 );
               }
             })}
 </ScrollToBottom>
+
+  </div>
 </div>
 {/* input text box */}
 <div className="textbox-div">
@@ -116,8 +144,24 @@ onClick={sendMessage}>
      ></SendIcon> 
       </IconButton>
 </div>
-
       </Drawer>
+
+{/* snackbar */}
+      <Snackbar
+      className="new-message"
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={state}
+        TransitionComponent={SlideTransition}
+        message={`${sender} : ${newMessage}`}
+        action={
+          <React.Fragment>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={()=>setState(false)}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
+      
     </div>
   );
 }

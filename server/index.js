@@ -48,7 +48,9 @@ let error = false;
 
 io.sockets.in(roomID).clients((err, clients) => {
     clients.forEach((client) => {
-      if (socketList[client] == username) {
+      console.log("checking")
+      console.log(socketList[client].username, username)
+      if (socketList[client].username == username) {
         error = true;
       }
     });
@@ -59,12 +61,12 @@ io.sockets.in(roomID).clients((err, clients) => {
 
 
 //join vedio room
-socket.on("B-join-room", ({roomID, username})=>{
+socket.on("B-join-room", ({roomID, username, video, audio})=>{
 
     //socket joining in room with id:roomID
 
     socket.join(roomID);
-    socketList[socket.id] = {username, video:true, audio:true, handRaised:false}   
+    socketList[socket.id] = {username, video, audio, handRaised:false}   
 
 
     io.sockets.in(roomID).clients((err, clients) => {

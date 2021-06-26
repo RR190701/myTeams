@@ -1,0 +1,94 @@
+.audio-video-check{
+ 
+    width: 100%;
+
+}
+.audio-video-check-div{
+    width: 370px;
+    margin: auto;
+    margin-top: 3rem;
+    background-color: #202020;
+    box-sizing: border-box;
+    padding: 1rem;
+    
+}
+.audio-video-check-div>span,
+.audio-video-check-div>h1{
+    width: 100%;
+    color: white;
+}
+.audio-video-check-div>h1{
+    font-size: 1.1rem;
+    margin-top: .3rem;
+}
+.audio-video-check-div>span{
+    font-size: .7rem;
+}
+.video-check-div{
+    width: 100%;
+    height: 250px;
+    border: #000000 solid 1px;
+    z-index: 1;
+    position: relative;
+
+}
+.video-check-div>video{
+    width: 100%;
+    height: 100%;
+    object-fit: cover!important;
+}
+.video-audio-toggle{
+    width: 100%;
+    color: white;
+    margin-top: .5rem;
+    display: flex;
+    box-sizing: border-box;
+    background-color: #212121;
+    border: #000000 solid 1px;
+}
+/* .video-audio-toggle>label{
+    margin-left: .5rem;
+}
+.video-audio-toggle>label>span{
+    font-size: .7rem;
+} */
+
+.mic-video-icon>svg{
+    height: 100%;
+    color:#e1e1dd;
+    align-items: center;
+    margin: 0 .5rem;
+}
+.video-off{
+    width: 100%;
+    height: 100%;
+    background-color: #131313;
+    color: white;
+    outline: #000000 solid 2px;
+    position: absolute;
+font-size: .7rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.video-off>svg{
+    width: 100%;
+    font-size: 1.2rem;
+    color: #e1e1dd;
+}
+.video-off>span{
+    width: 100%;
+    font-weight: 600;
+    color:#e1e1dd;
+}
+.username-text-feild{
+    width: 100%;
+    color: white;
+    margin-top: .5rem;
+    padding: 1rem .5rem;
+    box-sizing: border-box;
+    background-color: #131313;
+    border: #000000 solid 1px;
+}
+

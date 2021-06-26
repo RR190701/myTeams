@@ -18,7 +18,8 @@ const VideoChat = (props) => {
     const [videoDevices, setVideoDevices] = useState([]);
     const [showChat, setShowChat] = useState(false);
     const [userVideoAudio, setUserVideoAudio] = useState({
-        localUser: { video: true, audio: true , handRaised: false},
+        localUser: { video: sessionStorage.getItem("video")==="true"?true:false, 
+        audio: sessionStorage.getItem("audio")==="true"?true:false, handRaised: false},
       });
     const myVideoRef = useRef();
     const myStream = useRef();
@@ -44,7 +45,7 @@ const VideoChat = (props) => {
       myStream.current = stream;
 
       //making current user join the room with id:roomID
-      socket.emit('B-join-room', { roomID, username: currentUser });
+      socket.emit('B-join-room', { roomID, username: currentUser, video:userVideoAudio["localUser"].video, audio:userVideoAudio["localUser"].audio});
 
       //when a new user joins video room
       socket.on('F-user-join', (users) => {
@@ -56,7 +57,7 @@ const VideoChat = (props) => {
             //{username, video, audio}
 
           let { username, video, audio, handRaised } = data;
-          console.log("here", handRaised)
+      
 
           //calling all the other members of the video room
           if (username !== currentUser) {
@@ -252,11 +253,11 @@ function createUserVideo(peer, index, arr) {
 
       let addClass ='';
       if(userVideoAudio[username].audio && userVideoAudio[username].handRaised){
-        // console.log("raised")
+       
         addClass ="speaking-with-camera-off-hand-raised";
       }
       else if(userVideoAudio[username].handRaised){
-        // console.log("raised")
+     
         addClass ="camera-off-hand-raised";
       }
      
@@ -370,11 +371,11 @@ const openChat = (e) => {
     //defining addClass
     let addClass ='';
     if(userVideoAudio["localUser"].audio && userVideoAudio["localUser"].handRaised){
-      // console.log("raised")
+  
       addClass ="speaking-with-camera-off-hand-raised";
     }
     else if(userVideoAudio["localUser"].handRaised){
-      // console.log("raised")
+    
       addClass ="camera-off-hand-raised";
     }   
     else if(userVideoAudio["localUser"].audio)

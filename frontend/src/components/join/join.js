@@ -6,8 +6,17 @@ import Switch from '@material-ui/core/Switch';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import MicIcon from '@material-ui/icons/Mic';
 import MicOffIcon from '@material-ui/icons/MicOff';
+import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import Tooltip from '@material-ui/core/Tooltip';
+import ShareIcon from '@material-ui/icons/Share';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+
 
 import "./style.css";
+
 
 
 const Join = (props) => {
@@ -24,6 +33,18 @@ const Join = (props) => {
     const myStream = useRef();
     const userVideo =useRef(true)
     const userAudio =useRef(true);
+    const [open, setOpen] = React.useState(false);
+
+    const handleClick = () => {
+      setOpen(true);
+    };
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        setOpen(false);
+      };
 
 
 //handle camera and audio swtich
@@ -80,6 +101,13 @@ else{
 }
 }    
 
+const handleCancel = (e) =>{
+    e.preventDefault();
+    sessionStorage.removeItem('username');
+    window.location.href = '/';
+}
+
+
     return (
         <div className="audio-video-check">
             <div className="audio-video-check-div">
@@ -115,8 +143,10 @@ else{
         }
         </div>
         <FormControlLabel
-          control={<Switch checked={userVideo.current} onChange={handleSwitch} name="video"
-          color="primary" />}
+          control={<Switch 
+            size ="small"
+            checked={userVideo.current} onChange={handleSwitch} name="video"
+          color="default" />}
         
         >
         </FormControlLabel>
@@ -126,8 +156,10 @@ else{
         }
         </div>
         <FormControlLabel
-          control={<Switch checked={userAudio.current} onChange={handleSwitch} name="audio" 
-          color="primary"/>}
+          control={<Switch 
+            size ="small"
+            checked={userAudio.current} onChange={handleSwitch} name="audio" 
+          color="default"/>}
         />
 </div>
 
@@ -135,11 +167,49 @@ else{
          <div className="username-text-feild">
         <label htmlFor="username">User Name</label>
         <input type="text" id="username" ref={usernameRef} />
-        <button onClick ={handleJoin}>
-            join
-        </button>
         <span>{err?errorMessage:null}</span>
         </div>
+        {/* join , cancel buttons */}
+        <div className="join-buttons-div">
+<CopyToClipboard text={`http://localhost:3000/join/${props.match.params.roomID}`}
+onCopy={handleClick}>
+<Tooltip title="Copy meeting link to clipboard" arrow>
+        <ShareIcon 
+        className="meeting-link"></ShareIcon>
+    </Tooltip>
+</CopyToClipboard>
+
+          
+<Button variant="contained" 
+onClick ={handleCancel}
+className="cancel-button" color="primary">
+ Cancel
+</Button>
+<Button variant="contained" 
+onClick ={handleJoin}
+className="join-button" color="primary">
+  join
+</Button>
+        </div>
+
+        {/* snackbar */}
+        <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={open}
+        autoHideDuration={2000}
+        onClose={handleClose}
+        message="Meeting link copied"
+        action={
+          <React.Fragment>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
             </div>
         </div>
 

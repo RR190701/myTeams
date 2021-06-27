@@ -127,7 +127,7 @@ const VideoChat = (props) => {
     //removing leaving member from peers connection
     socket.on('F-user-leave', ({ userID, username }) => {
     const peerIdx = findPeer(userID);
-    console.log(`${username} left!!`)
+    console.log(`${username} left!!`);
     peerIdx.peer.destroy();
     setPeers((users) => {
       users = users.filter((user) => user.peerID !== peerIdx.peer.peerID);

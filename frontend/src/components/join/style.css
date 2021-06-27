@@ -40,22 +40,21 @@
 .video-audio-toggle{
     width: 100%;
     color: white;
-    margin-top: .5rem;
+    margin-top: .2rem;
     display: flex;
     box-sizing: border-box;
     background-color: #212121;
     border: #000000 solid 1px;
 }
-/* .video-audio-toggle>label{
-    margin-left: .5rem;
-}
-.video-audio-toggle>label>span{
-    font-size: .7rem;
-} */
+.video-audio-toggle{
+    padding: .2rem;
+} 
+
 
 .mic-video-icon>svg{
     height: 100%;
     color:#e1e1dd;
+    font-size: 1.2rem;
     align-items: center;
     margin: 0 .5rem;
 }
@@ -85,10 +84,43 @@ font-size: .7rem;
 .username-text-feild{
     width: 100%;
     color: white;
-    margin-top: .5rem;
+    margin-top: .2rem;
     padding: 1rem .5rem;
     box-sizing: border-box;
     background-color: #131313;
     border: #000000 solid 1px;
 }
 
+.join-buttons-div{
+    display: flex;
+    width: 100%;
+    margin-top: .2rem;
+}
+.join-buttons-div>button{
+ 
+    padding: 0!important;
+    height: 27px;
+    font-size: .7rem;
+    text-transform: capitalize;
+    font-weight: 600;
+    margin: .2rem;
+   
+}
+.cancel-button{
+background-color: #212121!important;
+border: #e1e1dd solid .1px!important;
+
+}
+.meeting-link,
+.join-button {
+    background-color: #5E4A9D!important;
+    color:#e1e1dd!important;
+}
+.meeting-link{
+    padding: .3rem .5rem;
+    font-size: 1rem!important;
+    border-radius: 2px;
+    margin-right: auto;
+    margin-top: .2rem;
+    cursor: pointer;
+}

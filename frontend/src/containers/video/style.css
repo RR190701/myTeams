@@ -1,7 +1,6 @@
 .video-box{
     width: 24.5%;
     height: 50%;
-    /* border: solid 2px red; */
     overflow: hidden;
 }
 .video-box>video{

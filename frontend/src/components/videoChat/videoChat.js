@@ -127,12 +127,23 @@ const VideoChat = (props) => {
     //removing leaving member from peers connection
     socket.on('F-user-leave', ({ userID, username }) => {
     const peerIdx = findPeer(userID);
-    console.log(`${username} left!!`);
+    console.log(`${peerIdx.username} left!!`);
     peerIdx.peer.destroy();
+
+
     setPeers((users) => {
       users = users.filter((user) => user.peerID !== peerIdx.peer.peerID);
       return [...users];
     });
+    console.log(peers);
+
+    setUserVideoAudio((preList) => {
+      return {
+        ...preList,
+        [username]: { video:false, audio:false, handRaised:false },
+      };
+    });
+console.log(userVideoAudio);
     
   });
 
@@ -457,8 +468,7 @@ const openChat = (e) => {
           {peers &&
             peers.map((peer, index, arr) => createUserVideo(peer, index, arr))}
 
-      </div>
-     {/* chat application */}
+      </div>     {/* chat application */}
      <Chat
      showChat={showChat}
      roomID={roomID}

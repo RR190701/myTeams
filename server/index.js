@@ -17,7 +17,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 app.use("/api", require("./routes/userAuth"));
-app.use("/private", require("./routes/private"));
+// app.use("/private", require("./routes/private"));
 
 /**
  * error handling should be the last peice of the middleware

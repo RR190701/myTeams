@@ -7,7 +7,7 @@ const io = require("socket.io")(server)
 const cors = require("cors")
 const { v4: uuidv4 } = require('uuid');
 const errorHandler = require("./middleware/ErrorHandler");
-const port = process.env.port||5000;
+const port = process.env.PORT||5000;
 
 //db configure
 connectDB();
@@ -164,6 +164,6 @@ server.listen(port, ()=>{
 
 //for smooth closing of server whenever the run is crashed
 process.on("unhandledRejection", (err, promise) => {
-  console.log(`logged Error ${err}`);
+  console.log(`logged Error :${err}`);
   server.close(() => process.exit(1));
 });

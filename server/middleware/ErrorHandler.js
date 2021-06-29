@@ -1,5 +1,5 @@
 //middleware that handles errors 
-const ErrorResponse = require("./../utility/errorResponse");
+const ErrorResponse = require("./../Utility/errorResponse");
 
 
 const errorHandler = (err, req, res, next) =>{

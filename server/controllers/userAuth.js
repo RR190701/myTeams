@@ -1,6 +1,6 @@
 //we will create controller fuctions for all the routes in this file
 const User = require("./../models/User");
-const ErrorResponse = require("./../utility/errorResponse");
+const ErrorResponse = require("./../Utility/errorResponse");
 // const sendEmail = require("../utils/sendEmail");
 // const crypto = require("crypto")
 // const bcrypt = require("bcryptjs");

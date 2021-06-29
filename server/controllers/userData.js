@@ -1,6 +1,6 @@
 //to access private data after logIn
 const User = require("./../models/User");
-const ErrorResponse = require("./../utility/errorResponse");
+const ErrorResponse = require("./../Utility/errorResponse");
 
 exports.getPrivateData = async (req, res, next) => {
   const username = req.params.username;

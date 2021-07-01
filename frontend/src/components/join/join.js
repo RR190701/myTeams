@@ -21,7 +21,7 @@ import "./style.css";
 
 const Join = (props) => {
 
-    // const usernameRef = useRef();
+    const usernameRef = useRef();
     const [err, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [localUser, setLocalUser] = useState({
@@ -74,7 +74,7 @@ const Join = (props) => {
 socket.on("F-user-already-exist", ({error}) => {
     if(!error){
         const roomID = props.match.params.roomID;
-    const username =localStorage.getItem("username")
+        const username = usernameRef.current.value;
         sessionStorage.setItem("username", username) 
         sessionStorage.setItem("video", userVideo.current);
         sessionStorage.setItem("audio",userAudio.current);
@@ -82,7 +82,7 @@ socket.on("F-user-already-exist", ({error}) => {
     }
     else {
        setError(error);
-       setErrorMessage("You are already in the meeting")
+       setErrorMessage("Username already joined the meeting")
     }
 })
 
@@ -91,9 +91,10 @@ socket.on("F-user-already-exist", ({error}) => {
 
 function handleJoin() {
     const roomID = props.match.params.roomID;
-    const username =localStorage.getItem("username")
+    const username =  usernameRef.current.value;
 if(!username){
-  window.location.href = '/';
+    setError(true);
+    setErrorMessage('Enter Room Name or User Name');
 }
 else{
     socket.emit("B-check-for-user", {roomID, username})
@@ -163,12 +164,14 @@ const handleCancel = (e) =>{
 </div>
 
           {/* username text feild */}
-     {err?<div className="username-text-feild">
+         <div className="username-text-feild">
+        <label htmlFor="username">User Name</label>
+        <input type="text" id="username" ref={usernameRef} />
         <span>{err?errorMessage:null}</span>
-        </div>:null}
+        </div>
         {/* join , cancel buttons */}
         <div className="join-buttons-div">
-<CopyToClipboard text={`http://localhost:3000/join/${props.match.params.roomID}`}
+<CopyToClipboard text={`join/${props.match.params.roomID}`}
 onCopy={handleClick}>
 <Tooltip title="Copy meeting link to clipboard" arrow>
         <ShareIcon 

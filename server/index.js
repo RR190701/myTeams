@@ -1,46 +1,32 @@
-require("dotenv").config({ path: "./config.env" });
 const express = require("express");
-const connectDB = require("./config/db");
 const app = express()
 const server = require("http").createServer(app);
 const io = require("socket.io")(server)
 const cors = require("cors")
 const { v4: uuidv4 } = require('uuid');
-const errorHandler = require("./middleware/ErrorHandler");
 const port = process.env.PORT||5000;
-
-//db configure
-connectDB();
 
 //middlewares
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
-app.use("/api", require("./routes/userAuth"));
-// app.use("/private", require("./routes/private"));
-
-/**
- * error handling should be the last peice of the middleware
- */
- app.use(errorHandler); 
 
 //list of sockets in a room
 let socketList = {};
 
-//route
+//route 
+app.get( "/", (req, res) => {
+  res.status(200).json({
+      success:"welcome to microsoft teams clone"
+  })
+  })
+
+//route 
 app.get( "/getRoomID", (req, res) => {
 res.status(200).json({
     roomID:uuidv4()
 })
 })
-
-//Route
-app.get('/ping', (req, res) => {
-    res.send({
-        success: true,
-      })
-      .status(200);
-  });
 
 
 //sockets
@@ -51,7 +37,6 @@ console.log("new user : ", socket.id);
 socket.on("disconnect", ()=>{
     socket.disconnect();
     console.log('user disconnected');
-    
 })
 
 //checking if user exist already
@@ -79,7 +64,7 @@ socket.on("B-join-room", ({roomID, username, video, audio})=>{
     //socket joining in room with id:roomID
 
     socket.join(roomID);
-    socketList[socket.id] = {username, video, audio, handRaised:false}   
+    socketList[socket.id] = {username, video, audio, handRaised:false, reaction:""}   
 
 
     io.sockets.in(roomID).clients((err, clients) => {
@@ -140,8 +125,18 @@ socket.on('B-accept-call', ({ signal, to }) => {
     } else if(switchTarget === 'audio') {
       socketList[socket.id].audio = !socketList[socket.id].audio;
     }
-    else {
+    else if(switchTarget === 'handRaised'){
       socketList[socket.id].handRaised = !socketList[socket.id].handRaised;
+    }
+    else{
+      if(socketList[socket.id].reaction === ''){
+        // console.log("reaction on");
+        socketList[socket.id].reaction = switchTarget;
+      }
+      else{
+        // console.log("reaction off");
+        socketList[socket.id].reaction = '';
+      }
     }
     socket.broadcast
       .to(roomID)
@@ -156,14 +151,6 @@ socket.on('B-accept-call', ({ signal, to }) => {
 // end of socket 
 });
 
-
-
 server.listen(port, ()=>{
     console.log("sever running on", port);
 })
-
-//for smooth closing of server whenever the run is crashed
-process.on("unhandledRejection", (err, promise) => {
-  console.log(`logged Error :${err}`);
-  server.close(() => process.exit(1));
-});

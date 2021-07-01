@@ -11,7 +11,9 @@ import IconButton from '@material-ui/core/IconButton';
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 import PanToolIcon from '@material-ui/icons/PanTool';
 import Badge from '@material-ui/core/Badge';
-import clsx from 'clsx';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
+import Tooltip from '@material-ui/core/Tooltip';
 import "./style.css";
 //material UI styling 
 
@@ -95,6 +97,8 @@ handRaised+=1;
       >
         Leave
       </Button>
+      {/* microphone button */}
+      <Tooltip title ={userVideoAudio.audio?"Turn off mic":"Turn on mic"}>
       <IconButton onClick={toggleCameraAudio} className={classes.topBarIcons} data-switch='audio'>
       {
            userVideoAudio.audio? 
@@ -103,7 +107,11 @@ handRaised+=1;
           <MicOffIcon></MicOffIcon> 
           }
        </IconButton>
-       <IconButton onClick={toggleCameraAudio} className={classes.topBarIcons} data-switch='video'>
+      </Tooltip>
+
+{/* camera Button */}
+<Tooltip title ={userVideoAudio.video?"Turn off camera":"Turn on camera"}>
+<IconButton onClick={toggleCameraAudio} className={classes.topBarIcons} data-switch='video'>
       {
            userVideoAudio.video? 
            <VideocamIcon />
@@ -111,15 +119,43 @@ handRaised+=1;
           <VideocamOffIcon></VideocamOffIcon>
           }
        </IconButton>
+</Tooltip>
+
       <Divider orientation="vertical" flexItem  />
       
+      {/* chat icon */}
+      <Tooltip title="Chat">
       <ChatIcon className={classes.topBarIcons} onClick={openChat} />
+      </Tooltip>
+      
+      {/* hand raised button */}
+      <Tooltip title={`${userVideoAudio.handRaised?"Put hand down":"Raise hand"}`}>
       <Badge badgeContent={getHandRaised()} color="primary" className="handRaisedCount">
       <PanToolIcon 
       onClick={toggleCameraAudio} 
       className={`${userVideoAudio.handRaised?classes.handRaised:classes.topBarIcons}`} 
        data-switch='handRaised'></PanToolIcon>
       </Badge>
+      </Tooltip>
+
+
+
+      {/* //heart reaction */}
+      <Tooltip title ="React love">
+      <FavoriteIcon
+      onClick={toggleCameraAudio} 
+      className={`${classes.topBarIcons}`} 
+       data-switch='heart'></FavoriteIcon>
+      </Tooltip>
+
+ {/* celebrate reaction */}
+ <Tooltip title="Send applause">
+ <InsertEmoticonIcon
+      onClick={toggleCameraAudio} 
+      className={`${classes.topBarIcons}`} 
+       data-switch='celebrate'></InsertEmoticonIcon>
+ </Tooltip>
+
 
        
       </div>

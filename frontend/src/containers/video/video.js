@@ -21,7 +21,6 @@ useEffect(()=>{
         <video
         playsInline
         autoPlay
-        muted
         ref={ref}>
 
         </video>

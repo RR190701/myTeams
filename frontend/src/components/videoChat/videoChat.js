@@ -8,6 +8,15 @@ import MicIcon from '@material-ui/icons/Mic';
 import MicOffIcon from '@material-ui/icons/MicOff';
 import PanToolIcon from '@material-ui/icons/PanTool';
 import Chat from './../Chat/chat';
+import Snackbar from '@material-ui/core/Snackbar';
+import Slide from '@material-ui/core/Slide';
+import Lottie from 'react-lottie';
+import * as heart from './../../utils/heart-lottie.json'
+import * as celebrate from "./../../utils/claps.json";
+
+function SlideTransition(props) {
+  return <Slide {...props} direction="up" />;
+}
 
 const VideoChat = (props) => {
  
@@ -19,12 +28,31 @@ const VideoChat = (props) => {
     const [showChat, setShowChat] = useState(false);
     const [userVideoAudio, setUserVideoAudio] = useState({
         localUser: { video: sessionStorage.getItem("video")==="true"?true:false, 
-        audio: sessionStorage.getItem("audio")==="true"?true:false, handRaised: false},
+        audio: sessionStorage.getItem("audio")==="true"?true:false, handRaised: false, reaction:""},
       });
     const myVideoRef = useRef();
     const myStream = useRef();
     const peersRef = useRef([]);
+    const [state, setState] = useState(false);
+    const [personRaisedHand,  setPersonRaisedHand] = useState("");
+    
+    const defaultOptions = {
+      loop: true,
+      autoplay: true, 
+      animationData: heart.default,
+      rendererSettings: {
+        preserveAspectRatio: 'xMidYMid slice'
+      }
+    };
 
+    const celebrateOptions ={
+      loop: true,
+      autoplay: true, 
+      animationData: celebrate.default,
+      rendererSettings: {
+        preserveAspectRatio: 'xMidYMid slice'
+      }
+    }
 
     useEffect (()=> {
 
@@ -35,7 +63,8 @@ const VideoChat = (props) => {
       });
 
     // Set Back Button Event
-    window.addEventListener('popstate', goToBack);    
+    window.addEventListener('popstate', goToBack); 
+    
 
    // Connect Camera & Mic
     navigator.mediaDevices
@@ -56,7 +85,7 @@ const VideoChat = (props) => {
             //userID -> socket.id
             //{username, video, audio}
 
-          let { username, video, audio, handRaised } = data;
+          let { username, video, audio, handRaised, reaction } = data;
       
 
           //calling all the other members of the video room
@@ -78,7 +107,7 @@ const VideoChat = (props) => {
             setUserVideoAudio((preList) => {
               return {
                 ...preList,
-                [peer.username]: { video, audio, handRaised },
+                [peer.username]: { video, audio, handRaised ,reaction},
               };
             });
           }
@@ -89,7 +118,7 @@ const VideoChat = (props) => {
 
     //receiving call from other room members
     socket.on('F-receive-call', ({ signal, from, data }) => {
-        let { username, video, audio, handRaised } = data;
+        let { username, video, audio, handRaised, reaction } = data;
         const peerIdx = findPeer(from);
         
         //if not present already
@@ -112,7 +141,7 @@ const VideoChat = (props) => {
           setUserVideoAudio((preList) => {
             return {
               ...preList,
-              [peer.username]: { video, audio, handRaised },
+              [peer.username]: { video, audio, handRaised, reaction },
             };
           });
         }
@@ -140,7 +169,7 @@ const VideoChat = (props) => {
     setUserVideoAudio((preList) => {
       return {
         ...preList,
-        [username]: { video:false, audio:false, handRaised:false },
+        [username]: { video:false, audio:false, handRaised:false, reaction:"" },
       };
     });
 console.log(userVideoAudio);
@@ -155,16 +184,48 @@ console.log(userVideoAudio);
       let video = preList[peerIdx.username].video;
       let audio = preList[peerIdx.username].audio;
       let handRaised = preList[peerIdx.username].handRaised;
+      let reaction = preList[peerIdx.username].reaction;
 
       if (switchTarget === 'video') video = !video;
       else if(switchTarget === 'audio') audio = !audio;
-      else handRaised= !handRaised;
+      else if(switchTarget === 'handRaised'){
+      handRaised= !handRaised;
+      if(handRaised && peerIdx.username!==currentUser){
+        setState(true);
+        setPersonRaisedHand(peerIdx.username);
+      }
+      
+      }
+      else if(switchTarget === 'heart'){
+      if(reaction==='')
+      reaction = switchTarget;
+      else
+      reaction='';
+      }
+      else if(switchTarget === 'celebrate'){
+        if(reaction==='')
+        reaction = switchTarget;
+        else
+        reaction='';
+        }
 
       return {
         ...preList,
-        [peerIdx.username]: { video, audio, handRaised },
+        [peerIdx.username]: { video, audio, handRaised, reaction },
       };
     });
+
+//timer for who raised hand popup
+      const timer = setTimeout(() => {
+        if(switchTarget==='handRaised'){
+
+          setState(false)
+          setPersonRaisedHand("");
+        }
+        else return;
+      }, 1300);
+      return () => clearTimeout(timer);
+
   });
     });
 
@@ -249,6 +310,7 @@ function createUserVideo(peer, index, arr) {
         // onClick={expandScreen}
         key={index}
       >
+        {generateLottie(peer.username)}
         {writeUserName(peer.username)}
         {writeUserNameOnVideo(peer.username)}
         {/* <FaIcon className='fas fa-expand' /> */}
@@ -256,6 +318,32 @@ function createUserVideo(peer, index, arr) {
       </div>
 
     );
+  }
+
+  function generateLottie (username){
+
+    if (userVideoAudio.hasOwnProperty(username)){
+      let reaction;
+      if(userVideoAudio[username].reaction === "heart")
+      reaction = defaultOptions;
+      else
+      reaction = celebrateOptions;
+
+      return(
+        <React.Fragment>
+        {
+        userVideoAudio[username].reaction?
+          <Lottie options={reaction}
+          height={100}
+          width={80}
+          style={{position:"absolute", bottom:"0"}}/>:
+          null
+        }
+        </React.Fragment>
+
+      );
+    }
+
   }
 
   function writeUserName(username) {
@@ -345,6 +433,7 @@ const openChat = (e) => {
         let videoSwitch = preList['localUser'].video;
         let audioSwitch = preList['localUser'].audio;
         let handRaisedSwitch = preList['localUser'].handRaised;
+        let reactionSwitch = preList['localUser'].reaction;
   
         if (target === 'video') {
           const userVideoTrack = myVideoRef.current.srcObject.getVideoTracks()[0];
@@ -364,18 +453,50 @@ const openChat = (e) => {
             myStream.current.getAudioTracks()[0].enabled = audioSwitch;
           }
         }
-        else{
+        else if(target === 'handRaised'){
           handRaisedSwitch = !handRaisedSwitch;
         }
+     else if( target === 'heart'){
+        reactionSwitch = 'heart';
+     }
+
+     else if(target === 'celebrate'){
+      reactionSwitch = 'celebrate';
+     }
 
   
         return {
           ...preList,
-          localUser: { video: videoSwitch, audio: audioSwitch, handRaised: handRaisedSwitch },
+          localUser: { video: videoSwitch, audio: audioSwitch, handRaised: handRaisedSwitch, reaction:reactionSwitch },
         };
       });
+      
+
+  //timer function
+  const timer = setTimeout(() => {
+    if(target === "heart" || target=== 'celebrate'){
+
+      setUserVideoAudio((preList) => {
+        let videoSwitch = preList['localUser'].video;
+        let audioSwitch = preList['localUser'].audio;
+        let handRaisedSwitch = preList['localUser'].handRaised;
+        let reactionSwitch = preList['localUser'].reaction;
+  
+        reactionSwitch="";
+        return {
+          ...preList,
+          localUser: { video: videoSwitch, audio: audioSwitch, handRaised: handRaisedSwitch, reaction:reactionSwitch },
+        };
+        
+      });
+      socket.emit('B-toggle-camera-audio', { roomID, switchTarget: target });
+    }
+    else return;
+  }, 2000);
+    
   
       socket.emit('B-toggle-camera-audio', { roomID, switchTarget: target });
+      return () => clearTimeout(timer);
     };
 
     
@@ -402,7 +523,12 @@ const openChat = (e) => {
     else if(userVideoAudio["localUser"].video)
     borderClass = "video-on";
 
-
+    //defining reaction
+    let userReaction;
+    if(userVideoAudio['localUser'].reaction === "heart")
+    userReaction = defaultOptions;
+    else
+    userReaction = celebrateOptions;
 
 
     return ( 
@@ -419,6 +545,15 @@ const openChat = (e) => {
     {/* video container */}
       <div className={`video-container ${showChat?"showChat":"hideChat"}`}>
         <div className={`video-box ${borderClass}` }>
+          {
+            userVideoAudio['localUser'].reaction?
+            <Lottie options={userReaction}
+            height={100}
+            width={80}
+            style={{position:"absolute", bottom:"0"}}/>:
+            null
+          }
+ 
         {userVideoAudio['localUser'].video ? null : (
                       <div className="username">
                       <div className={`avatar ${addClass}`}>
@@ -458,9 +593,9 @@ const openChat = (e) => {
   null
 }
         <video ref={myVideoRef} 
-            muted 
             autoPlay
-            playsInline></video>
+            muted
+            playInline></video>
 
         </div>
   
@@ -468,11 +603,21 @@ const openChat = (e) => {
           {peers &&
             peers.map((peer, index, arr) => createUserVideo(peer, index, arr))}
 
-      </div>     {/* chat application */}
+      </div>    
+       {/* chat application */}
      <Chat
      showChat={showChat}
      roomID={roomID}
      ></Chat>
+
+<Snackbar
+      className="hand-raised-pop-up"
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        open={state}
+        TransitionComponent={SlideTransition}
+        message={`${personRaisedHand} raised hand`}
+
+      />
 
         </div>
      );

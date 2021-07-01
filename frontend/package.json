@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:5000",
+  "proxy": "https://teams-clone-backend.herokuapp.com",
   "dependencies": {
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
@@ -11,7 +11,9 @@
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.21.1",
     "react": "^17.0.2",
+    "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "^17.0.2",
+    "react-lottie": "^1.2.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-scroll-to-bottom": "^4.1.2",

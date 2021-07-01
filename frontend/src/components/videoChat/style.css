@@ -136,3 +136,7 @@ font-weight: 400;
     font-size: 1rem;
     margin-right: .2rem;
 }
+.hand-raised-pop-up{
+    opacity: 0.4!important;
+    padding: 0!important;
+}

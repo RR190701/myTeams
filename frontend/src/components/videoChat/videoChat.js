@@ -25,12 +25,14 @@ const VideoChat = (props) => {
     //list of peers connected through same room
     const [peers, setPeers] = useState([]);
     const [videoDevices, setVideoDevices] = useState([]);
+    const [screenShare, setScreenShare] = useState(false);
     const [showChat, setShowChat] = useState(false);
     const [userVideoAudio, setUserVideoAudio] = useState({
         localUser: { video: sessionStorage.getItem("video")==="true"?true:false, 
         audio: sessionStorage.getItem("audio")==="true"?true:false, handRaised: false, reaction:""},
       });
     const myVideoRef = useRef();
+    const screenTrackRef = useRef();
     const myStream = useRef();
     const peersRef = useRef([]);
     const [state, setState] = useState(false);
@@ -499,6 +501,49 @@ const openChat = (e) => {
       return () => clearTimeout(timer);
     };
 
+    //SCREEN SHARING 
+    const handleScreenSharing = () => {
+      console.log("hello")
+      if (!screenShare) {
+        navigator.mediaDevices
+          .getDisplayMedia({ cursor: true })
+          .then((stream) => {
+            const screenTrack = stream.getTracks()[0];
+  
+            peersRef.current.forEach(({ peer }) => {
+              // replaceTrack (oldTrack, newTrack, oldStream);
+              peer.replaceTrack(
+                peer.streams[0]
+                  .getTracks()
+                  .find((track) => track.kind === 'video'),
+                screenTrack,
+                myStream.current
+              );
+            });
+  
+            // Listen click end
+            screenTrack.onended = () => {
+              peersRef.current.forEach(({ peer }) => {
+                peer.replaceTrack(
+                  screenTrack,
+                  peer.streams[0]
+                    .getTracks()
+                    .find((track) => track.kind === 'video'),
+                  myStream.current
+                );
+              });
+              myVideoRef.current.srcObject = myStream.current;
+              setScreenShare(false);
+            };
+  
+            myVideoRef.current.srcObject = stream;
+            screenTrackRef.current = screenTrack;
+            setScreenShare(true);
+          });
+      } else {
+        screenTrackRef.current.onended();
+      }
+    };
     
     //defining addClass
     let addClass ='';
@@ -541,6 +586,8 @@ const openChat = (e) => {
     toggleCameraAudio={toggleCameraAudio}
     openChat={openChat}
     showChat={showChat}
+    screenShare={screenShare}
+    handleScreenSharing={handleScreenSharing}
     ></TopBar>
     {/* video container */}
       <div className={`video-container ${showChat?"showChat":"hideChat"}`}>

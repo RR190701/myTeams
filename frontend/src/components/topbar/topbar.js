@@ -14,6 +14,7 @@ import Badge from '@material-ui/core/Badge';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 import Tooltip from '@material-ui/core/Tooltip';
+import PresentToAllIcon from '@material-ui/icons/PresentToAll';
 import "./style.css";
 //material UI styling 
 
@@ -66,7 +67,9 @@ const TopBar = ({
     toggleCameraAudio,
     peersVideoAudio,
     openChat,
-    showChat
+    showChat,
+    handleScreenSharing,
+    screenShare
 }) => {
 
     const classes = useStyles();
@@ -120,6 +123,12 @@ handRaised+=1;
           }
        </IconButton>
 </Tooltip>
+
+{/* shcreen share */}
+<Tooltip title="share screen">
+  <PresentToAllIcon className ={classes.topBarIcons} onClick={handleScreenSharing}/>
+</Tooltip>
+
 
       <Divider orientation="vertical" flexItem  />
       

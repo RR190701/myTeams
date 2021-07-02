@@ -171,7 +171,7 @@ const handleCancel = (e) =>{
         </div>
         {/* join , cancel buttons */}
         <div className="join-buttons-div">
-<CopyToClipboard text={`join/${props.match.params.roomID}`}
+<CopyToClipboard text={`http://localhost:3000/join/${props.match.params.roomID}`}
 onCopy={handleClick}>
 <Tooltip title="Copy meeting link to clipboard" arrow>
         <ShareIcon 

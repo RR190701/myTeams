@@ -1,0 +1,16 @@
+.home-page{
+    text-align: center;
+}
+.home-page>h1{
+    color: white;
+    font-size: 2.5rem;
+    padding-top: 1rem;
+    padding-bottom: 0;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    width: 100%;
+}
+.home-page>button{
+    background-color: #5E4A9D!important;
+    color:#e1e1dd!important;
+    text-transform: capitalize;
+}

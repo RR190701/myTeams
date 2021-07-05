@@ -17,7 +17,7 @@ let socketList = {};
 //route 
 app.get( "/", (req, res) => {
   res.status(200).json({
-      success:"welcome to microsoft teams clone"
+      success:"welcome to my microsoft teams clone"
   })
   })
 

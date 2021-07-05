@@ -5,10 +5,10 @@ import Drawer from '@material-ui/core/Drawer';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
 import ScrollToBottom from "react-scroll-to-bottom";
-import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
+import ClearIcon from '@material-ui/icons/Clear';
 import "./style.css"
 
 function SlideTransition(props) {
@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
     height:"47px",
     width:"100%",
     alignItems: 'center',
+    justifyContent:'space-between',
     boxShadow: "rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px",
     '& > h1':{
       fontSize:"1.3rem",
@@ -44,7 +45,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Chat({showChat, roomID}) {
+export default function Chat({showChat, 
+  roomID,
+closeChat}) {
   const classes = useStyles();
   const currentUser = sessionStorage.getItem('username');
   const [msg, setMsg] = useState([]);
@@ -102,6 +105,9 @@ export default function Chat({showChat, roomID}) {
 {/* drawer head */}
 <div  className={classes.drawerHeader}>
 <h1>Meeting Chat</h1>
+<IconButton onClick ={closeChat}>
+  <ClearIcon></ClearIcon>
+</IconButton>
 </div>
 {/* messages area */}
 <div className="chat-area">

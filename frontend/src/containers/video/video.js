@@ -21,6 +21,7 @@ useEffect(()=>{
         <video
         playsInline
         autoPlay
+        onClick={props.fullScreen}
         ref={ref}>
 
         </video>

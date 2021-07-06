@@ -9,14 +9,19 @@ import React from 'react';
 import Home from './components/home/home';
 import Join from './components/join/join';
 import VideoChat from './components/videoChat/videoChat';
+import SignUp from './components/register/register';
+import SignIn from './components/login/login';
+import PrivateRoute from './routing/privateRoute';
 
 function App() {
   return (
     <div className="App">
 <Router>
-  <Route exact path="/" component = {Home}></Route>
-  <Route exact path ="/join/:roomID" component={Join}></Route>
-  <Route exact path = "/meet/:roomID" component={VideoChat}></Route>
+  <PrivateRoute exact path="/" component = {Home}/>
+  <PrivateRoute exact path ="/join/:roomID" component={Join}/>
+  <PrivateRoute exact path = "/meet/:roomID" component={VideoChat}/>
+  <Route exact path = "/register" component={SignUp}></Route>
+  <Route exact path = "/login" component={SignIn}></Route>
 </Router>
     </div>
   );

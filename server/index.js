@@ -1,32 +1,33 @@
+require("dotenv").config({ path: "./config.env" });
 const express = require("express");
 const app = express()
 const server = require("http").createServer(app);
 const io = require("socket.io")(server)
 const cors = require("cors")
-const { v4: uuidv4 } = require('uuid');
+const connectDB = require("./config/db");
+const errorHandler = require("./middleware/ErrorHandler");
 const port = process.env.PORT||5000;
+
+//db configure
+connectDB();
 
 //middlewares
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
+//routes
+app.use('/', require("./routes/app"));
+app.use('/user', require("./routes/User"));
+app.use('/profile', require("./routes/profile"))
+
+/**
+ * error handling should be the last peice of the middleware
+ */
+ app.use(errorHandler); 
+
 
 //list of sockets in a room
 let socketList = {};
-
-//route 
-app.get( "/", (req, res) => {
-  res.status(200).json({
-      success:"welcome to my microsoft teams clone"
-  })
-  })
-
-//route 
-app.get( "/getRoomID", (req, res) => {
-res.status(200).json({
-    roomID:uuidv4()
-})
-})
 
 
 //sockets
@@ -154,3 +155,8 @@ socket.on('B-accept-call', ({ signal, to }) => {
 server.listen(port, ()=>{
     console.log("sever running on", port);
 })
+
+process.on("unhandledRejection", (err, promise) => {
+  console.log(`logged Error ${err}`);
+  server.close(() => process.exit(1));
+});

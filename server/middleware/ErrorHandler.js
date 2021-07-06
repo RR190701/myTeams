@@ -1,0 +1,30 @@
+//middleware that handles errors 
+const ErrorResponse = require("./../utility/errorResponse");
+
+
+const errorHandler = (err, req, res, next) =>{
+
+    let error = {...err};
+    error.message= err.message;
+
+    //duplicate field value entered error
+    if(err.code === 11000){
+     const message = "Username already exists";
+     error = new ErrorResponse(message, 400); //bad request
+
+    }
+
+    if(err.name ==="ValidationError"){
+        const message = Object.values(err.errors).map((val)=>val.maeesage)
+        error = new ErrorResponse(message, 400); //bad request
+   
+       }
+
+       res.status(error.statusCode|| 500).json({
+           success:false,
+           error:error.message||"Server Error"
+       });
+}
+
+
+module.exports = errorHandler;

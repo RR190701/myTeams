@@ -49,7 +49,7 @@ export default function Chat({showChat,
   roomID,
 closeChat}) {
   const classes = useStyles();
-  const currentUser = sessionStorage.getItem('username');
+  const currentUser = localStorage.getItem('username');
   const [msg, setMsg] = useState([]);
   const [message, setMessage] = useState("")
   const [state, setState] = useState(false);
@@ -59,6 +59,7 @@ closeChat}) {
 
   useEffect(() => {
     socket.on('F-receive-message', ({ message, sender }) => {
+      console.log("getting here on meetig chat");
       setMsg((msgs) => [...msgs, { sender, message }]);
 
       if(sender!==currentUser){
@@ -114,7 +115,7 @@ closeChat}) {
   <div className= "messages">
   <ScrollToBottom>
 {msg &&
-            msg.map(({ sender, message }, idx) => {
+          msg.map(({ sender, message }, idx) => {
               if (sender !== currentUser) {
                 return (
                   <div className="member-message" key={idx}>
@@ -144,7 +145,7 @@ onKeyPress={e => e.key==="Enter"?sendMessage(e):null}
 >
 </input>
 <IconButton color="primary" 
-aria-label="add to shopping cart"
+aria-label="send"
 onClick={sendMessage}>
       <SendIcon
      ></SendIcon> 

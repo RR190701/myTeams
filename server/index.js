@@ -7,6 +7,8 @@ const cors = require("cors")
 const connectDB = require("./config/db");
 const errorHandler = require("./middleware/ErrorHandler");
 const port = process.env.PORT||5000;
+const Message = require("./models/chats")
+const User = require("./models/User")
 
 //db configure
 connectDB();
@@ -47,7 +49,7 @@ let error = false;
 
 io.sockets.in(roomID).clients((err, clients) => {
     clients.forEach((client) => {
-      console.log("checking")
+      console.log("checking ", roomID)
       console.log(socketList[client].username, username)
       if (socketList[client].username == username) {
         error = true;
@@ -61,6 +63,19 @@ io.sockets.in(roomID).clients((err, clients) => {
 
 //join vedio room
 socket.on("B-join-room", ({roomID, username, video, audio})=>{
+
+
+  //saving roomID to user database 
+User.updateOne({
+  username
+}, {
+  $set: {
+      roomID
+  }
+}).then((res) =>{
+  console.log("roomID saved");
+
+})
 
     //socket joining in room with id:roomID
 
@@ -143,10 +158,40 @@ socket.on('B-accept-call', ({ signal, to }) => {
       .to(roomID)
       .emit('F-toggle-camera-audio', { userID: socket.id, switchTarget });
   });
+//joining chat room
+socket.on('B-join-chat-room', ({roomID, username}) => {
 
+  //saving roomID to user database 
+  User.updateOne({
+    username
+  }, {
+    $set: {
+        roomID
+    }
+  }).then((res) =>{
+    console.log("roomID saved");
+  })
+
+  //joing room
+  socket.join(roomID);
+
+  //sending chats
+  Message.find({roomID}).then((result) => {
+      socket.emit("F-get-room-chat", result);
+  });
+  socket.broadcast.to(roomID).emit("F-join-chat-room", username);
+
+
+})
   //sending message to others
   socket.on('B-send-message', ({ roomID, message, sender }) => {
+
+   const setNewMessage = new Message({roomID, message, sender});
+   setNewMessage.save().then(() => {
+
     io.sockets.in(roomID).emit('F-receive-message', { message, sender });
+   })
+
   });
 
 // end of socket 

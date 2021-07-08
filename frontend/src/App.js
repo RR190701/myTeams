@@ -12,6 +12,7 @@ import VideoChat from './components/videoChat/videoChat';
 import SignUp from './components/register/register';
 import SignIn from './components/login/login';
 import PrivateRoute from './routing/privateRoute';
+import ChatRoom from './components/chatRoom/chatRoom';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
   <PrivateRoute exact path="/" component = {Home}/>
   <PrivateRoute exact path ="/join/:roomID" component={Join}/>
   <PrivateRoute exact path = "/meet/:roomID" component={VideoChat}/>
+  <PrivateRoute exact path = "/chat/:roomID" component={ChatRoom}/>
   <Route exact path = "/register" component={SignUp}></Route>
   <Route exact path = "/login" component={SignIn}></Route>
 </Router>

@@ -21,7 +21,6 @@ import "./style.css";
 
 const Join = (props) => {
 
-    const usernameRef = useRef();
     const [err, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [localUser, setLocalUser] = useState({
@@ -74,15 +73,13 @@ const Join = (props) => {
 socket.on("F-user-already-exist", ({error}) => {
     if(!error){
         const roomID = props.match.params.roomID;
-        const username = usernameRef.current.value;
-        sessionStorage.setItem("username", username) 
         sessionStorage.setItem("video", userVideo.current);
         sessionStorage.setItem("audio",userAudio.current);
         props.history.push(`/meet/${roomID}`)
     }
     else {
        setError(error);
-       setErrorMessage("Username already joined the meeting")
+       setErrorMessage("You are already there in the meeting")
     }
 })
 
@@ -91,10 +88,10 @@ socket.on("F-user-already-exist", ({error}) => {
 
 function handleJoin() {
     const roomID = props.match.params.roomID;
-    const username =  usernameRef.current.value;
+    const username =  localStorage.getItem("username");
 if(!username){
     setError(true);
-    setErrorMessage('Enter Room Name or User Name');
+    window.location.href = '/';
 }
 else{
     socket.emit("B-check-for-user", {roomID, username})
@@ -103,7 +100,6 @@ else{
 
 const handleCancel = (e) =>{
     e.preventDefault();
-    sessionStorage.removeItem('username');
     window.location.href = '/';
 }
 
@@ -164,14 +160,12 @@ const handleCancel = (e) =>{
 </div>
 
           {/* username text feild */}
-         <div className="username-text-feild">
-        <label htmlFor="username">User Name</label>
-        <input type="text" id="username" ref={usernameRef} />
-        <span>{err?errorMessage:null}</span>
-        </div>
+          {err?<div className="username-text-feild">
+        <span>{errorMessage}</span>
+        </div>:null}
         {/* join , cancel buttons */}
         <div className="join-buttons-div">
-<CopyToClipboard text={`http://localhost:3000/join/${props.match.params.roomID}`}
+<CopyToClipboard text={`https://teams-clone-backend.herokuapp.com/join/${props.match.params.roomID}`}
 onCopy={handleClick}>
 <Tooltip title="Copy meeting link to clipboard" arrow>
         <ShareIcon 

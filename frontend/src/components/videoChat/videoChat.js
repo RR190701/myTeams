@@ -11,10 +11,8 @@ import Chat from './../Chat/chat';
 import Snackbar from '@material-ui/core/Snackbar';
 import Slide from '@material-ui/core/Slide';
 import Lottie from 'react-lottie';
-import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import * as heart from './../../utils/heart-lottie.json'
 import * as celebrate from "./../../utils/claps.json";
-import Tooltip from '@material-ui/core/Tooltip';
 
 function SlideTransition(props) {
   return <Slide {...props} direction="up" />;
@@ -22,7 +20,7 @@ function SlideTransition(props) {
 
 const VideoChat = (props) => {
  
-    const currentUser = sessionStorage.getItem('username');
+    const currentUser = localStorage.getItem('username');
     const roomID = props.match.params.roomID;
     //list of peers connected through same room
     const [peers, setPeers] = useState([]);
@@ -67,14 +65,7 @@ const VideoChat = (props) => {
       });
 
     // Set Back Button Event
-    window.addEventListener('popstate', goToBack); 
-
-    //tab switch events
-  //   window.addEventListener('beforeunload', function (e) {
-  //     e.preventDefault();
-  //     e.returnValue = '';
-  // });
-    
+    window.addEventListener('popstate', goToBack);     
 
    // Connect Camera & Mic
     navigator.mediaDevices
@@ -427,7 +418,6 @@ function createUserVideo(peer, index, arr) {
     const goToBack = (e) => {
       e.preventDefault();
       socket.emit('B-leave-room', { roomID, leaver: currentUser });
-      sessionStorage.removeItem('username');
       window.location.href = '/';
     };
   

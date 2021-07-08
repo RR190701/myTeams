@@ -156,7 +156,7 @@ handRaised+=1;
       <Divider orientation="vertical" flexItem  />
 
       {/*copy meeting link icon */}
-      <CopyToClipboard text={`http://localhost:3000/join/${roomID}`} onCopy={handleClick}>
+      <CopyToClipboard text={`https://teams-clone-backend.herokuapp.com/join/${roomID}`} onCopy={handleClick}>
       <Tooltip title="click to copy meeting link">
       <InsertLinkIcon className={classes.topBarIcons} />
       </Tooltip>

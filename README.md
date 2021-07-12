@@ -5,30 +5,18 @@
 </br>
 
 - [x] User login and SignUp facility
-
 - [x] Welcome home page
-
-[x] Ability to create meeting and chatting rooms
-
-[x] Audio and Video check before meeting
-
-[x] Ability to toggle microphone and camera
-
-[x] Raising hand facility
-
-[x] Ability to send animated reactions e.g. love, applause
-
-[x] Ability to share screen
-
-[x] Ability to have full screen view with one click
-
-[x] chat room in meeting
-
-[x] Chat bubbles pop ups with incoming messages
-
-[x] Ability to chat real time before, in and after the meeting, **Adapt feature**
-
-[x] UI is similar to **Microsoft Teams** to get follow along easily :heart:
+- [x] Ability to create meeting and chatting rooms
+- [x] Audio and Video check before meeting
+- [x] Ability to toggle microphone and camera
+- [x] Raising hand facility
+- [x] Ability to send animated reactions e.g. love, applause
+- [x] Ability to share screen
+- [x] Ability to have full screen view with one click
+- [x] chat room in meeting
+- [x] Chat bubbles pop ups with incoming messages
+- [x] Ability to chat real time before, in and after the meeting, **Adapt feature**
+- [x] UI is similar to **Microsoft Teams** to get follow along easily :heart:
 
 ## Demo version
 </br>

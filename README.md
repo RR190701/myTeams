@@ -67,7 +67,7 @@ cd myTeams
 #### Config Variables
 Define config variables in config.env.
 
-- Create a free mongoDB atlas account at [https://www.mongodb.com/](https://www.mongodb.com/) and set a new cluster connection url equal to `db_connection_URL`
+- Create a free mongoDB atlas account at [https://www.mongodb.com](https://www.mongodb.com) and set a new cluster connection url equal to `db_connection_URL`
 - Set `JWT_SECRET = <your_jwt_secret_string>` where `<your_jwt_secret_string>` is long alphanumerical string 
 - Set `JWT_EXPIRE = <jwt_token_life_time>` where `<jwt_token_life_time>` is a string e.g. 10min, 30min
 

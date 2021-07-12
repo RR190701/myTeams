@@ -3,6 +3,7 @@
 
 ## Features
 </br>
+
 [x] User login and SignUp facility
 [x] Welcome home page
 [x] Ability to create meeting and chatting rooms
@@ -20,6 +21,7 @@
 ## Demo version
 </br>
 A demo version is automatically deployed from our repositories:
+
 - Deployment for frontend part -[https://my-microsoft-teams-clone.netlify.app](https://my-microsoft-teams-clone.netlify.app)
 - Deployment for backend part - [https://teams-clone-backend.herokuapp.com](https://teams-clone-backend.herokuapp.com)
 

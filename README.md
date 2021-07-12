@@ -20,7 +20,7 @@
 
 ## Demo version
 </br>
-A demo version is automatically deployed from our repositories:
+A demo version is automatically deployed for this repositories:
 
 - Deployment for frontend part -[https://my-microsoft-teams-clone.netlify.app](https://my-microsoft-teams-clone.netlify.app)
 - Deployment for backend part - [https://teams-clone-backend.herokuapp.com](https://teams-clone-backend.herokuapp.com)
@@ -90,6 +90,6 @@ cd frontend
 - Visit your app at [http://localhost:3000](http://localhost:3000.) :tada:
 
 ## Contributing
-</br>
+
 > Feel free to **contribute** :heart_eyes:
 - When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.

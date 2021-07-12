@@ -6,13 +6,25 @@ import Button from '@material-ui/core/Button';
 import VideoCallIcon from '@material-ui/icons/VideoCall';
 import ChatIcon from '@material-ui/icons/Chat';
 import HistoryIcon from '@material-ui/icons/History';
+import Snackbar from '@material-ui/core/Snackbar';
 import "./style.css";
 import Navbar from '../Navbar/navbar';
 
 
 
 const Home = (props) => {
-  const recentRoomID =useRef("")
+  const recentRoomID =useRef("");
+  const [popMessge, setPopMessage] =useState("");
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+  
+      setOpen(false);
+      setPopMessage("");
+    };
         
     const defaultOptions = {
         loop: true,
@@ -24,7 +36,13 @@ const Home = (props) => {
       };
 
       const recentChatRoom = () =>{
-        console.log(recentRoomID.current);
+
+        if(recentRoomID.current === ""){
+          setPopMessage("No chat room in history")  
+          setOpen(true);
+          return;
+        }
+       
         
       props.history?.push(`/chat/${recentRoomID.current}`)
     }
@@ -47,12 +65,19 @@ const Home = (props) => {
           try {
       
             const { data } = await axios.get(`https://teams-clone-backend.herokuapp.com/profile/${localStorage.getItem("username")}`, config);
-            recentRoomID.current =data.roomID;
+            
+            if(data.roomID === "undefined"){
+               recentRoomID.current ="";
+            }
+            else{
+              recentRoomID.current=data.roomID;
+            }
+
+
             console.log(recentRoomID);
           } catch (error) {
             localStorage.removeItem("authToken");
             localStorage.removeItem("username");
-            console.log("nothing");
           }
         };
         fetchPrivateData();
@@ -102,11 +127,27 @@ onClick ={handleChat}>
     <ChatIcon style ={{marginRight:".5rem"}}></ChatIcon>
   Chat now
 </Button>
+
+{/* recent chat room */}
 <Button variant="contained" 
 onClick ={recentChatRoom}>
    <HistoryIcon style ={{marginRight:".5rem"}}></HistoryIcon>
   Recent Chat Room
 </Button>
+
+     {/* snackbar */}
+            <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        open={open}
+        autoHideDuration={1500}
+        onClose={handleClose}
+        message={popMessge}
+      />
+
+
         </div>);
 }
  

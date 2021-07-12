@@ -58,6 +58,15 @@ export default function SignUp({history}) {
   //on handle
   const HandleSubmit = async (e) => {
     e.preventDefault();
+
+    if(password.trim()!== confirmPassword.trim()){
+      setError("*passwords should match");
+      return;
+    }
+    else{
+      setError("");
+    }
+   
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -143,6 +152,9 @@ export default function SignUp({history}) {
                 type="password"
                 id="password"
               />
+            </Grid>
+            <Grid item xs={12}>
+   <span style={{color:"red"}}>{error}</span>
             </Grid>
           </Grid>
           <Button

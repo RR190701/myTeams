@@ -165,7 +165,7 @@ const handleCancel = (e) =>{
         </div>:null}
         {/* join , cancel buttons */}
         <div className="join-buttons-div">
-<CopyToClipboard text={`https://teams-clone-backend.herokuapp.com/join/${props.match.params.roomID}`}
+<CopyToClipboard text={`https://my-microsoft-teams-clone.netlify.app/join/${props.match.params.roomID}`}
 onCopy={handleClick}>
 <Tooltip title="Copy meeting link to clipboard" arrow>
         <ShareIcon 

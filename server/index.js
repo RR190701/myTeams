@@ -50,7 +50,6 @@ let error = false;
 io.sockets.in(roomID).clients((err, clients) => {
     clients.forEach((client) => {
       console.log("checking ", roomID)
-      console.log(socketList[client].username, username)
       if (socketList[client].username == username) {
         error = true;
       }
@@ -81,6 +80,11 @@ User.updateOne({
 
     socket.join(roomID);
     socketList[socket.id] = {username, video, audio, handRaised:false, reaction:""}   
+
+    //sending chats
+  Message.find({roomID}).then((result) => {
+    socket.emit("F-get-room-chat", result);
+});
 
 
     io.sockets.in(roomID).clients((err, clients) => {

@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 
 router.route("/").get((req, res) => {
     res.status(200).json({
-        success:"welcome to my microsoft teams clone"
+        success:"welcome to microsoft teams clone"
     })
     });
 

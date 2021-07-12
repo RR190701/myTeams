@@ -10,7 +10,6 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 
-
 import "./style.css"
 
 const ChatRoom = (props) => {
@@ -23,7 +22,7 @@ const ChatRoom = (props) => {
     const [popMessge, setPopMessage] =useState("");
 
     const handleClick = () => {
-      setPopMessage("Chat room link copied")  
+      setPopMessage("Link copied to clipboard")  
       setOpen(true);
     };
     const handleClose = (event, reason) => {
@@ -104,7 +103,7 @@ const ChatRoom = (props) => {
                 {/* link */}
                 <div>
                  <p>{roomID}</p>
-<CopyToClipboard text={`https://teams-clone-backend.herokuapp.com/join/${props.match.params.roomID}`}
+<CopyToClipboard text={`https://my-microsoft-teams-clone.netlify.app/join/${props.match.params.roomID}`}
 onCopy={handleClick}>
 <Tooltip title="Click to copy chat room link to clipboard" arrow>
         <ShareIcon 
@@ -118,6 +117,16 @@ onCopy={handleClick}>
 onClick ={leaveChatRoom}>
   leave
 </Button>
+
+      {/*copy meeting link icon */}
+      <CopyToClipboard text={`https://my-microsoft-teams-clone.netlify.app/join/${roomID}`} onCopy={handleClick}>
+      <Button variant="contained"
+    color="primary"
+    className ="join-meeting-again">
+  Copy meeting link
+</Button>
+</CopyToClipboard>
+
                 
             </div>
              </Paper>

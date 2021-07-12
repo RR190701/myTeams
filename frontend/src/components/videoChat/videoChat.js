@@ -77,6 +77,7 @@ const VideoChat = (props) => {
       //making current user join the room with id:roomID
       socket.emit('B-join-room', { roomID, username: currentUser, video:userVideoAudio["localUser"].video, audio:userVideoAudio["localUser"].audio});
 
+
       //when a new user joins video room
       socket.on('F-user-join', (users) => {
 

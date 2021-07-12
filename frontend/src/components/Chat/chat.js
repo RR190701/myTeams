@@ -58,6 +58,22 @@ closeChat}) {
  // const inputRef = useRef();
 
   useEffect(() => {
+
+//getting chats from room
+socket.on("F-get-room-chat", (results) => {
+  console.log(results);
+  let msgs =[];
+  results.forEach(({sender, message}) => {
+      msgs.push({
+          sender,
+          message
+      })
+  });
+
+  //getting room chats
+  setMsg(msg => [...msg, ...msgs]);
+});
+
     socket.on('F-receive-message', ({ message, sender }) => {
       console.log("getting here on meetig chat");
       setMsg((msgs) => [...msgs, { sender, message }]);

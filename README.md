@@ -90,6 +90,6 @@ cd frontend
 - Visit your app at [http://localhost:3000](http://localhost:3000.) :tada:
 
 ## Contributing
-
+</br>
 > Feel free to **contribute** :heart_eyes:
 - When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.

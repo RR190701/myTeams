@@ -4,9 +4,9 @@
 ## Features
 </br>
 
-[x] User login and SignUp facility
+- [x] User login and SignUp facility
 
-[x] Welcome home page
+- [x] Welcome home page
 
 [x] Ability to create meeting and chatting rooms
 
@@ -60,6 +60,7 @@ Please get familiar with the components of the project in order to be able to co
 
 - node --version >= 6
 - npm --version >= 3
+
 
 ## Local Installation
 </br>

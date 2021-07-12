@@ -103,7 +103,7 @@ const ChatRoom = (props) => {
                 {/* link */}
                 <div>
                  <p>{roomID}</p>
-<CopyToClipboard text={`https://my-microsoft-teams-clone.netlify.app/join/${props.match.params.roomID}`}
+<CopyToClipboard text={`https://my-microsoft-teams-clone.netlify.app/chat/${props.match.params.roomID}`}
 onCopy={handleClick}>
 <Tooltip title="Click to copy chat room link to clipboard" arrow>
         <ShareIcon 

@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import axios from "axios";
-import { ToastContainer, toast, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -37,7 +37,6 @@ export default function SignIn({history}) {
   const classes = useStyles();
   const [username, setUsername] =useState("");
   const [password, setPassword] =useState("");
-  const [errors, setErrors] = useState("");
 
   useEffect(() => {
     if (localStorage.getItem("authToken")) {
@@ -79,9 +78,7 @@ export default function SignIn({history}) {
     } catch (error) {
       popError(error.response.data.error);
       console.log(error.response.data.error);
-      setTimeout(() => {
-        setErrors("");
-      }, 5000);
+
     }
   };
 

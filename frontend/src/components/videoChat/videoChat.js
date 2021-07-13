@@ -24,7 +24,6 @@ const VideoChat = (props) => {
     const roomID = props.match.params.roomID;
     //list of peers connected through same room
     const [peers, setPeers] = useState([]);
-    const [videoDevices, setVideoDevices] = useState([]);
     const [screenShare, setScreenShare] = useState(false);
     const [showChat, setShowChat] = useState(false);
     const [userVideoAudio, setUserVideoAudio] = useState({
@@ -58,11 +57,9 @@ const VideoChat = (props) => {
 
     useEffect (()=> {
 
-    // Get Video Devices
-    navigator.mediaDevices.enumerateDevices().then((devices) => {
-        const video_devices = devices.filter((device) => device.kind === 'videoinput');
-        setVideoDevices(video_devices);
-      });
+      if (!localStorage.getItem("authToken")) {
+        window.location.href = '/';
+    }
 
     // Set Back Button Event
     window.addEventListener('popstate', goToBack);     
@@ -74,10 +71,23 @@ const VideoChat = (props) => {
       myVideoRef.current.srcObject = stream;
       myStream.current = stream;
 
+     const username = localStorage.getItem("username")
+      //checking if user already exists
+      socket.emit("B-check-for-user", {roomID, username}); 
+
+
+           socket.on("F-user-already-exist", ({error}) => {
+        if(error){
+           console.log("You are already there in the meeting")
+           window.location.href = "/";
+        }
+    })
+
+
       //making current user join the room with id:roomID
       socket.emit('B-join-room', { roomID, username: currentUser, video:userVideoAudio["localUser"].video, audio:userVideoAudio["localUser"].audio});
 
-
+ 
       //when a new user joins video room
       socket.on('F-user-join', (users) => {
 
@@ -229,6 +239,10 @@ console.log(userVideoAudio);
       return () => clearTimeout(timer);
 
   });
+    }).catch((error) =>{
+
+      console.log("Can't access your device camera and microphone")
+      window.location.href = '/';
     });
 
 
@@ -343,7 +357,6 @@ function createUserVideo(peer, index, arr) {
           null
         }
         </React.Fragment>
-
       );
     }
 
@@ -403,7 +416,7 @@ function createUserVideo(peer, index, arr) {
       if (userVideoAudio[username].video) {
        
         return (  
-          <div class ="username-on-video">
+          <div className="username-on-video">
           { userVideoAudio[username].handRaised?<PanToolIcon style={{color:"#FFCC00"}}></PanToolIcon>:null}
           <div>
             {username}
@@ -504,12 +517,13 @@ const openChat = (e) => {
 
     //SCREEN SHARING 
     const handleScreenSharing = () => {
-      console.log("hello")
+    
       if (!screenShare) {
         navigator.mediaDevices
           .getDisplayMedia({ cursor: true })
           .then((stream) => {
             const screenTrack = stream.getTracks()[0];
+
   
             peersRef.current.forEach(({ peer }) => {
               // replaceTrack (oldTrack, newTrack, oldStream);
@@ -540,6 +554,8 @@ const openChat = (e) => {
             myVideoRef.current.srcObject = stream;
             screenTrackRef.current = screenTrack;
             setScreenShare(true);
+          }).catch((error) => {
+            console.log("No stream for sharing")
           });
       } else {
         screenTrackRef.current.onended();
@@ -654,7 +670,7 @@ const openChat = (e) => {
 {
   userVideoAudio["localUser"].video?
   (
-    <div class = "username-on-video">
+    <div className= "username-on-video">
 { userVideoAudio["localUser"].handRaised?<PanToolIcon style={{color:"#FFCC00"}}></PanToolIcon>:null}
 <div>
   {currentUser}
@@ -670,7 +686,7 @@ const openChat = (e) => {
         onClick={fullScreen}
             autoPlay
             muted
-            playInline></video>
+            playsInline></video>
 
         </div>
   

@@ -1,7 +1,8 @@
 import React,{useEffect,useRef} from 'react';
 import "./style.css"
 
-const Video = (props) => {
+//A functional component to render other member video stream on screen
+const Video = (props) => {   
 const ref = useRef();
 const peer = props.peer;
 

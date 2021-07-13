@@ -45,7 +45,7 @@ const ChatRoom = (props) => {
 
         socket.emit("B-join-chat-room", {roomID, username:currentUser});
         socket.on("F-get-room-chat", (results) => {
-            console.log(results);
+         
             let msgs =[];
             results.forEach(({sender, message}) => {
                 msgs.push({
@@ -66,7 +66,7 @@ const ChatRoom = (props) => {
         });
 
         socket.on('F-receive-message', ({ message, sender }) => {
-            console.log("getting something", {message, sender});
+           
             setMsg((msgs) => [...msgs, { sender, message }]);
           });
 
@@ -76,7 +76,7 @@ const ChatRoom = (props) => {
 
     //helper function
   const sendMessage = () => {
-      console.log("working");
+     
     if (message) {
       socket.emit('B-send-message', { roomID, message, sender: currentUser });
       setMessage("");

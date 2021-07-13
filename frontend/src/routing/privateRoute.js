@@ -1,5 +1,6 @@
-import { Component } from 'react';
-import {Redirect, Route, route} from 'react-router-dom';
+import {Redirect, Route} from 'react-router-dom';
+
+//private routing for protected routes.
 
 const PrivateRoute = ({component: Component, ...rest}) => {
     return (

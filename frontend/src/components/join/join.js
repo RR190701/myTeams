@@ -67,7 +67,10 @@ const Join = (props) => {
       .then((stream) => {
         myVideo.current.srcObject = stream;
         myStream.current = stream;
-      });
+      }).catch((error) =>{
+        console.log("Can't access your device camera and microphone")
+        window.location.href = '/';
+      });;
 
 
 socket.on("F-user-already-exist", ({error}) => {

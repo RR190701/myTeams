@@ -63,7 +63,6 @@ io.sockets.in(roomID).clients((err, clients) => {
 //join vedio room
 socket.on("B-join-room", ({roomID, username, video, audio})=>{
 
-
   //saving roomID to user database 
 User.updateOne({
   username

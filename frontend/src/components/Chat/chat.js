@@ -1,4 +1,4 @@
-import React, {useState, useEffect,useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import socket from '../../socket';
 import { makeStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -61,7 +61,7 @@ closeChat}) {
 
 //getting chats from room
 socket.on("F-get-room-chat", (results) => {
-  console.log(results);
+ 
   let msgs =[];
   results.forEach(({sender, message}) => {
       msgs.push({
@@ -74,8 +74,10 @@ socket.on("F-get-room-chat", (results) => {
   setMsg(msg => [...msg, ...msgs]);
 });
 
+
+ //adding new messages to the list
     socket.on('F-receive-message', ({ message, sender }) => {
-      console.log("getting here on meetig chat");
+   
       setMsg((msgs) => [...msgs, { sender, message }]);
 
       if(sender!==currentUser){

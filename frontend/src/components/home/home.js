@@ -74,7 +74,6 @@ const Home = (props) => {
             }
 
 
-            console.log(recentRoomID);
           } catch (error) {
             localStorage.removeItem("authToken");
             localStorage.removeItem("username");
@@ -87,7 +86,7 @@ const handleMeet = async() =>{
 
     try {
         const {data} = await axios.get("https://teams-clone-backend.herokuapp.com/getRoomID")
-        //  const {data} = await axios.get("/getRoomID")
+      
         props.history?.push(`/join/${data.roomID}`)
     }
     catch(error){
@@ -98,7 +97,7 @@ const handleChat = async() =>{
 
   try {
       const {data} = await axios.get("https://teams-clone-backend.herokuapp.com/getRoomID")
-      //  const {data} = await axios.get("/getRoomID")
+   
       props.history?.push(`/chat/${data.roomID}`)
   }
   catch(error){
